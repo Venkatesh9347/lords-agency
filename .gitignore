@@ -1,0 +1,12 @@
+# OS artifacts
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor / IDE artifacts
+.vscode/
+*.swp
+*~
+
+# Local browser-test tooling output (audit artifacts, not part of the website)
+.playwright-mcp/
