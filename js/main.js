@@ -3,7 +3,7 @@
   "use strict";
 
   // Single place to change the receiving inbox for the static v1 form.
-  var CONTACT_EMAIL = "hello@lordsagency.com";
+  var CONTACT_EMAIL = "venkatesh99.info@gmail.com";
 
   var yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
