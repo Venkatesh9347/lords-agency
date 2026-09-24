@@ -10,3 +10,6 @@ Desktop.ini
 
 # Local browser-test tooling output (audit artifacts, not part of the website)
 .playwright-mcp/
+
+# Oh My Subagents task state
+.oms/
