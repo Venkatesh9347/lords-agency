@@ -69,7 +69,7 @@ h3 { font-size: 1.08rem; font-weight: 700; }
 .site-nav a { color: #d9e2f1; text-decoration: none; font-size: 0.93rem; font-weight: 500; }
 .site-nav a:hover, .site-nav a.is-active { color: #fff; }
 .header-actions { display: flex; align-items: center; gap: 0.7rem; }
-.nav-toggle { display: inline-flex; flex-direction: column; gap: 5px; background: transparent; border: 1px solid rgba(255,255,255,.25); border-radius: 8px; padding: 0.55rem 0.6rem; cursor: pointer; }
+.nav-toggle { display: inline-flex; flex-direction: column; gap: 5px; background: transparent; border: 1px solid rgba(255,255,255,.25); border-radius: 8px; padding: 0.55rem 0.6rem; cursor: pointer; min-height: 44px; min-width: 44px; align-items: center; justify-content: center; }
 .nav-toggle span { display: block; width: 20px; height: 2px; background: #fff; }
 
 /* Buttons */
@@ -128,7 +128,7 @@ h3 { font-size: 1.08rem; font-weight: 700; }
 
 /* Filter + cards */
 .filter-bar { display: flex; flex-wrap: wrap; gap: 0.55rem; margin: 1.6rem 0 1.4rem; }
-.chip { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 0.5rem 0.95rem; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
+.chip { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 0.5rem 0.95rem; font-weight: 600; font-size: 0.9rem; cursor: pointer; display: inline-flex; align-items: center; min-height: 44px; }
 .chip.is-active { background: #0a1628; color: #fff; border-color: #0a1628; }
 .cards { display: grid; gap: 1rem; grid-template-columns: 1fr; }
 .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.25rem; }
@@ -176,6 +176,7 @@ h3 { font-size: 1.08rem; font-weight: 700; }
 .about-card { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14); border-radius: var(--radius); padding: 1.3rem; }
 .about-card h3 { color: var(--gold-400); }
 .about-card p { color: #d7e0ef; margin: 0.3rem 0 0; }
+.about-motto { color: var(--gold-400); font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.85rem; margin: 0.2rem 0 0; }
 
 /* FAQ */
 .faq { display: grid; gap: 0.7rem; margin-top: 1.6rem; }
@@ -223,6 +224,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--gold-500); outli
 .footer nav a:hover { color: #fff; }
 .footer-head { color: #fff; font-weight: 800; margin: 0 0 0.5rem; }
 .footer-mail { margin-top: 0.8rem; color: #9fb0c9; }
+.footer .fine-print { color: #9fb0c9; }
+.footer .fine-print a { color: #e8eef7; }
 .footer-base { display: flex; flex-wrap: wrap; gap: 0.8rem; justify-content: space-between; border-top: 1px solid rgba(255,255,255,.12); margin-top: 2rem; padding-top: 1.2rem; font-size: 0.88rem; }
 .footer-base a { color: var(--gold-400); }
 
