@@ -67,6 +67,7 @@
 </head>
 <body id="top">
   <a class="skip-link" href="#main">Skip to content</a>
+  <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
 
   <header class="site-header" id="site-header">
     <div class="container header-inner">
@@ -95,14 +96,16 @@
   <main id="main" tabindex="-1">
     <!-- ============ HERO ============ -->
     <section class="hero" id="home">
+      <div class="hero-grid-bg" aria-hidden="true"></div>
+      <div class="hero-glow" aria-hidden="true"></div>
       <div class="container hero-grid">
         <div class="hero-copy">
-          <p class="eyebrow eyebrow-light">Custom Software &middot; AI &middot; Automation</p>
-          <h1>Turning ideas into real software.</h1>
-          <p class="lede">Custom software, AI and automation solutions designed around your business.</p>
-          <div class="hero-ctas">
+          <p class="eyebrow eyebrow-light">Ideas | Software | Real Impact</p>
+          <h1><span class="h1-line"><span>Turning ideas into</span></span><span class="h1-line h1-line--gold h1-line-2"><span>real software.</span></span></h1>
+          <p class="lede">LORDS AGENCY builds custom software, automation, AI-powered applications and business systems — engineered around how your business actually works.</p>
+          <div class="hero-ctas" data-depth-cta>
             <a class="btn btn-primary btn-lg" href="#contact">Start a Project</a>
-            <a class="btn btn-ghost btn-lg" href="#services">Explore Services</a>
+            <a class="btn btn-ghost btn-lg" href="#work">Explore Our Work</a>
           </div>
           <ul class="hero-points" aria-label="Why work with us">
             <li>Business-first discovery</li>
@@ -110,32 +113,33 @@
             <li>Support after launch</li>
           </ul>
         </div>
-        <div class="hero-visual" aria-label="Illustrative software system architecture" role="img">
+        <div class="hero-visual" aria-label="Illustrative software system diagram" role="img" data-depth-visual>
           <div class="sys-window">
-            <div class="sys-bar" aria-hidden="true"><span></span><span></span><span></span><em>agency / operations</em></div>
-            <div class="sys-body">
-              <aside class="sys-side" aria-hidden="true">
-                <i class="on"></i><i></i><i></i><i></i><i></i>
-              </aside>
-              <div class="sys-main" aria-hidden="true">
-                <div class="sys-row">
-                  <div class="sys-chip"><b>CRM</b><span>pipeline</span></div>
-                  <div class="sys-chip"><b>Automation</b><span>workflows</span></div>
-                  <div class="sys-chip"><b>Payments</b><span>billing</span></div>
+            <div class="sys-bar" aria-hidden="true"><span></span><span></span><span></span><em>system / reference</em></div>
+            <div class="sys-tree" aria-hidden="true">
+              <div class="sys-tier sys-tier--core">
+                <div class="sys-node">API</div>
+                <div class="sys-link"></div>
+                <div class="sys-node">AUTH</div>
+                <div class="sys-link"></div>
+                <div class="sys-node">DATABASE</div>
+              </div>
+              <div class="sys-branch">
+                <div class="sys-leaf">
+                  <i class="sys-v"></i>
+                  <div class="sys-node">USERS</div>
+                  <div class="sys-node">PAYMENTS</div>
                 </div>
-                <div class="sys-panel">
-                  <div class="sys-panel-head"><b>Analytics</b><span class="live"><i></i>live</span></div>
-                  <div class="sys-bars"><i style="--h:42%"></i><i style="--h:68%"></i><i style="--h:55%"></i><i style="--h:84%"></i><i style="--h:63%"></i><i style="--h:92%"></i><i style="--h:74%"></i></div>
-                </div>
-                <div class="sys-row">
-                  <div class="sys-chip"><b>Users</b><span>roles &amp; auth</span></div>
-                  <div class="sys-chip"><b>API</b><span>integrations</span></div>
-                  <div class="sys-chip"><b>Notifications</b><span>alerts</span></div>
+                <div class="sys-leaf">
+                  <i class="sys-v"></i>
+                  <div class="sys-node">EVENTS</div>
+                  <div class="sys-node">LOGS</div>
                 </div>
               </div>
+              <div class="sys-status"><i></i>STATUS&nbsp;&nbsp;SYSTEM READY</div>
             </div>
           </div>
-          <p class="sys-caption">Illustrative system mockup — not a client product.</p>
+          <p class="sys-caption">Illustrative architecture diagram — not a client system.</p>
         </div>
       </div>
     </section>
@@ -172,7 +176,7 @@
     <!-- ============ SERVICES ============ -->
     <section class="section services" id="services">
       <div class="container">
-        <p class="eyebrow">Services</p>
+        <p class="eyebrow">What we build</p>
         <h2>Twenty-one services. One accountable partner.</h2>
         <p class="section-lede">From first scope to long-term maintenance — grouped by what they do for your business. Every engagement starts from your process, not a technology preference.</p>
 
@@ -321,7 +325,7 @@
     <section class="section section-dark solutions" id="solutions">
       <div class="container">
         <p class="eyebrow eyebrow-light">Business problems &rarr; solutions</p>
-        <h2 class="light">Your business has a workflow.<br />We turn it into a system.</h2>
+        <h2 class="light">From problem<br />to system.</h2>
         <p class="section-lede light-muted">If any of these sound familiar, that is exactly where we start.</p>
         <div class="flow-grid">
           <article class="flow-card">
@@ -386,10 +390,14 @@
     <section class="section work" id="work">
       <div class="container">
         <p class="eyebrow">Selected Work</p>
-        <h2>Software we stand behind.</h2>
-        <p class="section-lede">We distinguish between <strong>internal / proprietary products</strong> we own and <strong>client engagements</strong>, which are confidential by default. We don't publish client names, figures or testimonials without permission — and we never invent them.</p>
+        <h2>Selected work.</h2>
+        <p class="section-lede">Selected projects and reference work. We distinguish between <strong>internal / proprietary products</strong> we own and <strong>client engagements</strong>, which are confidential by default. We don't publish client names, figures or testimonials without permission — and we never invent them.</p>
+      </div>
 
-        <article class="case">
+      <div class="work-scroll">
+        <div class="work-sticky">
+          <div class="container work-track">
+        <article class="case work-panel">
           <div class="case-copy">
             <p class="badge badge-internal">Internal / Proprietary</p>
             <h3>MasterInTech — Learning Management Platform</h3>
@@ -421,7 +429,7 @@
         </article>
 
         <div class="work-grid">
-          <article class="work-card">
+          <article class="work-card work-panel">
             <p class="badge badge-client">Project Reference</p>
             <h3>Multi-Vendor Marketplace — E-commerce Platform</h3>
             <p>A multi-vendor marketplace reference covering the core commerce workflow: vendor onboarding, product catalogs, orders, commissions and payouts, and customer storefronts. Each project in this space is scoped, built and supported as its own separate engagement.</p>
@@ -435,7 +443,7 @@
             <p class="work-note">Representative engagement scope. Details on a discovery call.</p>
           </article>
 
-          <article class="work-card">
+          <article class="work-card work-panel">
             <p class="badge badge-client">Project Reference</p>
             <h3>Furniture &amp; Services — Retail Platform</h3>
             <p>A furniture retail and services platform reference covering catalogs, quotations, bookings, service scheduling and customer follow-ups. Each project in this space is scoped, built and supported as its own separate engagement.</p>
@@ -449,7 +457,7 @@
             <p class="work-note">Representative engagement scope. Details on a discovery call.</p>
           </article>
 
-          <article class="work-card">
+          <article class="work-card work-panel">
             <p class="badge badge-client">Client work — confidential</p>
             <h3>Engagement types we deliver</h3>
             <p>Rather than listing names we can't verify publicly, here are the engagement patterns we take on:</p>
@@ -465,6 +473,8 @@
             <a class="btn btn-secondary" href="#contact">Discuss your project</a>
           </article>
         </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -472,7 +482,7 @@
     <section class="section section-muted process" id="process">
       <div class="container">
         <p class="eyebrow">Process</p>
-        <h2>From first call to long-term platform.</h2>
+        <h2>How we build.</h2>
         <p class="section-lede">You always know what stage you're at, what happens next, and what it costs.</p>
         <ol class="timeline">
           <li>
@@ -513,16 +523,12 @@
     <section class="section stack" id="stack">
       <div class="container">
         <p class="eyebrow">Technology</p>
-        <h2>An engineering capability matrix.</h2>
+        <h2>Built with the right technology.</h2>
         <p class="section-lede">Depending on project requirements, we work across the following stacks and capabilities. We choose proven tooling that is easy to hire for, host affordably and maintain for years.</p>
         <div class="matrix">
           <div class="matrix-group">
-            <h3>Frontend</h3>
-            <ul><li>React</li><li>TypeScript</li><li>JavaScript</li><li>HTML / CSS</li></ul>
-          </div>
-          <div class="matrix-group">
-            <h3>Backend</h3>
-            <ul><li>Laravel</li><li>PHP</li><li>REST APIs</li></ul>
+            <h3>Application</h3>
+            <ul><li>React</li><li>TypeScript</li><li>JavaScript</li><li>HTML / CSS</li><li>Laravel</li><li>PHP</li></ul>
           </div>
           <div class="matrix-group">
             <h3>Data</h3>
@@ -533,12 +539,12 @@
             <ul><li>Linux</li><li>Nginx</li><li>Docker</li><li>Cloud deployment</li></ul>
           </div>
           <div class="matrix-group">
-            <h3>Integrations</h3>
-            <ul><li>Payments</li><li>Email</li><li>Notifications</li><li>Live systems</li><li>External APIs</li></ul>
+            <h3>Intelligence</h3>
+            <ul><li>AI APIs</li><li>Workflow automation</li><li>Document processing</li><li>AI-assisted systems</li></ul>
           </div>
           <div class="matrix-group">
-            <h3>AI &amp; Automation</h3>
-            <ul><li>AI APIs</li><li>Workflow automation</li><li>Document processing</li><li>AI-assisted systems</li></ul>
+            <h3>Integration</h3>
+            <ul><li>REST APIs</li><li>Payments</li><li>Email</li><li>Notifications</li><li>Live systems</li><li>External APIs</li></ul>
           </div>
         </div>
         <p class="fine-print">Not every technology is used on every project — choices follow your requirements. You get documented, transferable systems your future team can run.</p>
@@ -548,21 +554,13 @@
     <!-- ============ ABOUT ============ -->
     <section class="section section-dark about" id="about">
       <div class="container">
-        <p class="eyebrow eyebrow-light">About</p>
+        <p class="eyebrow eyebrow-light">Why Lords</p>
         <h2 class="light">Build &middot; Automate &middot; Innovate &middot; Grow</h2>
         <p class="section-lede light-muted">Technology for a Brighter Tomorrow.</p>
         <div class="about-grid">
           <div class="about-main">
             <p class="light-muted">LORDS AGENCY is a software development agency. We work with businesses that need custom systems — not templates — and want a technical partner who understands operations, not just code.</p>
             <p class="light-muted">Based in Guntur, Andhra Pradesh, India.</p>
-            <ul class="check-list check-light">
-              <li><strong>Business-first discovery:</strong> we map the process before writing code.</li>
-              <li><strong>Custom engineering:</strong> systems designed around your workflows.</li>
-              <li><strong>Practical automation:</strong> narrow, measurable automation tied to real work.</li>
-              <li><strong>Long-term maintainability:</strong> we build systems we are willing to maintain.</li>
-              <li><strong>Honest scope:</strong> if off-the-shelf software fits better, we'll say so.</li>
-              <li><strong>Support after launch:</strong> maintenance, training and evolution.</li>
-            </ul>
           </div>
           <div class="about-cards">
             <div class="about-card">
@@ -579,6 +577,28 @@
             </div>
           </div>
         </div>
+        <ol class="why-list">
+          <li class="why-item">
+            <span class="why-no" aria-hidden="true">01</span>
+            <div><h3>Built around the business</h3>
+            <p>Business-first discovery: we map the process before writing code.</p></div>
+          </li>
+          <li class="why-item">
+            <span class="why-no" aria-hidden="true">02</span>
+            <div><h3>Engineered for real workflows</h3>
+            <p>Custom engineering: systems designed around your workflows. Practical automation: narrow, measurable automation tied to real work.</p></div>
+          </li>
+          <li class="why-item">
+            <span class="why-no" aria-hidden="true">03</span>
+            <div><h3>Security &amp; access control</h3>
+            <p>Roles, permissions and secure defaults designed in from day one.</p></div>
+          </li>
+          <li class="why-item">
+            <span class="why-no" aria-hidden="true">04</span>
+            <div><h3>Designed to evolve</h3>
+            <p>Long-term maintainability: we build systems we are willing to maintain — with support after launch. Honest scope: if off-the-shelf software fits better, we'll say so.</p></div>
+          </li>
+        </ol>
       </div>
     </section>
 
@@ -669,9 +689,11 @@
     <!-- ============ CONTACT ============ -->
     <section class="section section-muted contact" id="contact">
       <div class="container">
-        <p class="eyebrow">Contact / Start a Project</p>
-        <h2>Have a software problem worth solving?</h2>
-        <p class="section-lede">Tell us what you're trying to build, automate or improve.</p>
+        <div class="contact-cta">
+          <p class="eyebrow eyebrow-center">Contact / Start a Project</p>
+          <h2>Have an idea?<span class="gold-line">Let's turn it into software.</span></h2>
+          <p class="section-lede contact-lede">Tell us what you're trying to build, automate or improve.</p>
+        </div>
         <div class="contact-grid">
           <div class="contact-info">
             <h3>Start a Project</h3>
@@ -848,6 +870,7 @@
       <div class="footer-brand">
         <p class="brand-text">LORDS <span>AGENCY</span></p>
         <p class="footer-tag">Turning ideas into real software.</p>
+        <p class="footer-motto">Ideas | Software | Real Impact</p>
         <p class="footer-motto">Build &middot; Automate &middot; Innovate &middot; Grow</p>
         <p class="fine-print">Technology for a Brighter Tomorrow.</p>
         <p class="fine-print">We design, develop and deliver software solutions that help businesses work smarter, automate operations and scale.</p>

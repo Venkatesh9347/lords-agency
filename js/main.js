@@ -48,6 +48,28 @@
     onScroll();
   }
 
+  // ---- Page progress bar (1–2px gold, transform-only, rAF-throttled) ----
+  // Decorative: hidden via CSS under prefers-reduced-motion.
+  var progressBar = document.getElementById("progress-bar");
+  var progressQueued = false;
+  function updateProgress() {
+    progressQueued = false;
+    if (!progressBar) return;
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    var ratio = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    progressBar.style.transform = "scaleX(" + ratio.toFixed(4) + ")";
+  }
+  if (progressBar) {
+    window.addEventListener("scroll", function () {
+      if (!progressQueued) {
+        progressQueued = true;
+        window.requestAnimationFrame(updateProgress);
+      }
+    }, { passive: true });
+    window.addEventListener("resize", updateProgress);
+    updateProgress();
+  }
+
   // ---- Active nav highlight ----
   var links = Array.prototype.slice.call(document.querySelectorAll(".site-nav a"));
   var sections = links
@@ -116,6 +138,87 @@
     timeline.classList.add("is-visible");
   }
 
+  // ---- Process current-stage activation (decorative gold highlight) ----
+  // Scroll progress through the timeline maps to stages 0–5, mirroring the
+  // progressive connector: every stage gets its moment, exactly one active.
+  // Text stays put; no layout effects.
+  var stageItems = Array.prototype.slice.call(document.querySelectorAll(".process .timeline li"));
+  var stageList = document.querySelector(".process .timeline");
+  var stageQueued = false;
+  function updateCurrentStage() {
+    stageQueued = false;
+    if (!stageItems.length || !stageList) return;
+    var r = stageList.getBoundingClientRect();
+    var span = r.height + window.innerHeight;
+    var progress = span > 0 ? Math.min(1, Math.max(0, (window.innerHeight - r.top) / span)) : 0;
+    var idx = Math.min(stageItems.length - 1, Math.floor(progress * stageItems.length));
+    stageItems.forEach(function (li, i) { li.classList.toggle("is-current", i === idx); });
+  }
+  if (stageItems.length) {
+    window.addEventListener("scroll", function () {
+      if (!stageQueued) {
+        stageQueued = true;
+        window.requestAnimationFrame(updateCurrentStage);
+      }
+    }, { passive: true });
+    window.addEventListener("resize", updateCurrentStage);
+    updateCurrentStage();
+  }
+
+  // ---- Selected Work: scroll-driven horizontal showcase (desktop only) ----
+  // Vertical stack is the default (mobile / no-JS / reduced-motion).
+  // Only engages with .js + min-width:1024px + no reduced motion.
+  var workScroll = document.querySelector(".work-scroll");
+  var workTrack = document.querySelector(".work-track");
+  var workReduced = false;
+  var workDesktop = false;
+  try {
+    workReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    workDesktop = window.matchMedia("(min-width: 1024px)").matches;
+  } catch (err) { workReduced = true; }
+  function workEnabled() {
+    return !!(workScroll && workTrack && document.documentElement.classList.contains("js") && workDesktop && !workReduced);
+  }
+  var workQueued = false;
+  function updateWorkTrack() {
+    workQueued = false;
+    if (!workEnabled()) {
+      if (workTrack) workTrack.style.transform = "";
+      return;
+    }
+    var rect = workScroll.getBoundingClientRect();
+    var total = rect.height - window.innerHeight;
+    var progress = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
+    var maxX = Math.max(0, workTrack.scrollWidth - workTrack.clientWidth);
+    workTrack.style.transform = "translate3d(" + (-progress * maxX).toFixed(1) + "px,0,0)";
+  }
+  if (workScroll && workTrack) {
+    window.addEventListener("scroll", function () {
+      if (!workQueued) {
+        workQueued = true;
+        window.requestAnimationFrame(updateWorkTrack);
+      }
+    }, { passive: true });
+    window.addEventListener("resize", function () {
+      try { workDesktop = window.matchMedia("(min-width: 1024px)").matches; } catch (err) {}
+      updateWorkTrack();
+    });
+    updateWorkTrack();
+  }
+  // Active panel emphasis (works in both horizontal and stacked layouts).
+  var workPanels = Array.prototype.slice.call(document.querySelectorAll(".work-panel"));
+  if (workPanels.length && "IntersectionObserver" in window) {
+    var panelObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          workPanels.forEach(function (p) { p.classList.remove("is-active"); });
+          entry.target.classList.add("is-active");
+        }
+      });
+    }, { rootMargin: "-30% 0px -30% 0px", threshold: 0 });
+    workPanels.forEach(function (p) { panelObserver.observe(p); });
+  }
+
   // ---- Subtle desktop-only pointer glow (CSS variables, no tracking) ----
   // Disabled on touch, on reduced-motion, and without fine hover support.
   try {
@@ -144,6 +247,78 @@
       }, { passive: true });
     }
   } catch (err) { /* glow is decorative — never break the page */ }
+
+  // ---- Hero pointer depth (desktop only, interpolated, tiny offsets) ----
+  // Layers: grid background 1–2px, glow 3–5px, system visual 4–8px, CTAs 2–3px.
+  // Disabled on touch, coarse pointers, and reduced motion. Cursor untouched.
+  try {
+    var depthFine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    var depthCalm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var hero = document.querySelector(".hero");
+    var depthBg = document.querySelector(".hero-grid-bg");
+    var depthGlow = document.querySelector(".hero-glow");
+    var depthVisual = document.querySelector("[data-depth-visual]");
+    var depthCta = document.querySelector("[data-depth-cta]");
+    if (hero && depthFine && !depthCalm && (depthBg || depthGlow || depthVisual || depthCta)) {
+      var tX = 0, tY = 0, cX = 0, cY = 0, depthRunning = false;
+      var DEPTH = [
+        { el: depthBg, fx: 2, fy: 2, mode: "bg" },
+        { el: depthGlow, fx: 5, fy: 4, mode: "offset" },
+        { el: depthVisual, fx: 7, fy: 6, mode: "move" },
+        { el: depthCta, fx: 2.5, fy: 2, mode: "move" }
+      ];
+      var depthTick = function () {
+        cX += (tX - cX) * 0.08;
+        cY += (tY - cY) * 0.08;
+        if (Math.abs(tX - cX) < 0.01 && Math.abs(tY - cY) < 0.01) {
+          cX = tX; cY = tY;
+        }
+        DEPTH.forEach(function (layer) {
+          if (!layer.el) return;
+          var x = (cX * layer.fx).toFixed(2);
+          var y = (cY * layer.fy).toFixed(2);
+          if (layer.mode === "bg") {
+            // Background grid drifts via background-position (keeps its transform animation intact).
+            layer.el.style.backgroundPosition = x + "px " + y + "px, " + x + "px " + y + "px";
+          } else if (layer.mode === "offset") {
+            // Glow has an infinite transform animation, so offset via the
+            // independent `translate` property (composes, never conflicts).
+            layer.el.style.translate = x + "px " + y + "px";
+          } else {
+            layer.el.style.transform = "translate3d(" + x + "px," + y + "px,0)";
+          }
+        });
+        if (cX !== tX || cY !== tY || tX !== 0 || tY !== 0) {
+          window.requestAnimationFrame(depthTick);
+        } else {
+          depthRunning = false;
+          DEPTH.forEach(function (layer) {
+            if (!layer.el) return;
+            if (layer.mode === "bg") { layer.el.style.backgroundPosition = ""; }
+            else if (layer.mode === "offset") { layer.el.style.translate = ""; }
+            else { layer.el.style.transform = ""; }
+          });
+        }
+      };
+      var depthKick = function () {
+        if (!depthRunning) {
+          depthRunning = true;
+          window.requestAnimationFrame(depthTick);
+        }
+      };
+      hero.addEventListener("pointermove", function (e) {
+        if (e.pointerType && e.pointerType !== "mouse") return;
+        var r = hero.getBoundingClientRect();
+        tX = ((e.clientX - r.left) / Math.max(1, r.width) - 0.5) * 2;
+        tY = ((e.clientY - r.top) / Math.max(1, r.height) - 0.5) * 2;
+        depthKick();
+      }, { passive: true });
+      hero.addEventListener("pointerleave", function () {
+        tX = 0; tY = 0;
+        depthKick();
+      }, { passive: true });
+    }
+  } catch (err) { /* depth is decorative — never break the page */ }
 
   // ---- Service filters ----
   var chips = Array.prototype.slice.call(document.querySelectorAll("[data-filter]"));
