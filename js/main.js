@@ -17,6 +17,13 @@
   // ---- Mobile nav ----
   var toggle = document.getElementById("nav-toggle");
   var nav = document.getElementById("site-nav");
+  function closeMenu(returnFocus) {
+    if (!toggle || !nav) return;
+    nav.classList.remove("is-open");
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-label", "Open menu");
+    if (returnFocus) toggle.focus();
+  }
   if (toggle && nav) {
     toggle.addEventListener("click", function () {
       var open = nav.classList.toggle("is-open");
@@ -24,11 +31,21 @@
       toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
     });
     nav.addEventListener("click", function (e) {
-      if (e.target.tagName === "A") {
-        nav.classList.remove("is-open");
-        toggle.setAttribute("aria-expanded", "false");
-      }
+      if (e.target.tagName === "A") closeMenu(false);
     });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && nav.classList.contains("is-open")) closeMenu(true);
+    });
+  }
+
+  // ---- Header compact on scroll ----
+  var header = document.getElementById("site-header");
+  if (header) {
+    var onScroll = function () {
+      header.classList.toggle("scrolled", window.scrollY > 24);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
   }
 
   // ---- Active nav highlight ----
@@ -41,7 +58,10 @@
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
           links.forEach(function (a) {
-            a.classList.toggle("is-active", a.getAttribute("href") === "#" + entry.target.id);
+            var active = a.getAttribute("href") === "#" + entry.target.id;
+            a.classList.toggle("is-active", active);
+            if (active) { a.setAttribute("aria-current", "true"); }
+            else { a.removeAttribute("aria-current"); }
           });
         }
       });
@@ -49,8 +69,22 @@
     sections.forEach(function (s) { navObserver.observe(s); });
   }
 
-  // ---- Reveal on scroll ----
-  var revealTargets = document.querySelectorAll(".card, .work-card, .steps li, .stack-group, .about-card, .hero-card");
+  // ---- Reveal on scroll (JS-gated so no-JS pages stay fully visible) ----
+  // Stagger via --d custom property: subtle per-index delay within each grid.
+  document.documentElement.classList.add("js");
+  var revealTargets = document.querySelectorAll(".card, .work-card, .steps li, .timeline li, .stack-group, .matrix-group, .about-card, .hero-card, .sys-window, .flow-card, .value-card, .case, .mock");
+  var staggerGroups = document.querySelectorAll(".cards, .flow-grid, .work-grid, .timeline, .matrix, .value-cards");
+  staggerGroups.forEach(function (group) {
+    // Direct reveal children get a subtle stagger index (capped at 6 steps).
+    // group.children is used (no :scope selector) for maximum compatibility —
+    // if anything here throws, reveals must still work, so keep it simple.
+    var direct = Array.prototype.filter.call(group.children, function (child) {
+      return child.classList && (child.classList.contains("card") || child.classList.contains("work-card") || child.classList.contains("flow-card") || child.classList.contains("matrix-group") || child.classList.contains("value-card") || child.tagName === "LI");
+    });
+    direct.forEach(function (el, i) {
+      el.style.setProperty("--d", String(Math.min(i, 5) * 70) + "ms");
+    });
+  });
   revealTargets.forEach(function (el) { el.classList.add("reveal"); });
   if ("IntersectionObserver" in window) {
     var revealObserver = new IntersectionObserver(function (entries) {
@@ -66,17 +100,80 @@
     revealTargets.forEach(function (el) { el.classList.add("is-visible"); });
   }
 
+  // ---- Process connector progressive reveal (decorative only) ----
+  var timeline = document.querySelector(".process .timeline");
+  if (timeline && "IntersectionObserver" in window) {
+    var timelineObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          timeline.classList.add("is-visible");
+          timelineObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.2 });
+    timelineObserver.observe(timeline);
+  } else if (timeline) {
+    timeline.classList.add("is-visible");
+  }
+
+  // ---- Subtle desktop-only pointer glow (CSS variables, no tracking) ----
+  // Disabled on touch, on reduced-motion, and without fine hover support.
+  try {
+    var finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (finePointer && !reducedMotion) {
+      var glowQueued = false;
+      var glowX = 0;
+      var glowY = 0;
+      var applyGlow = function () {
+        glowQueued = false;
+        document.body.style.setProperty("--mx", glowX + "px");
+        document.body.style.setProperty("--my", glowY + "px");
+        if (!document.body.classList.contains("has-pointer")) {
+          document.body.classList.add("has-pointer");
+        }
+      };
+      document.addEventListener("pointermove", function (e) {
+        if (e.pointerType && e.pointerType !== "mouse") return;
+        glowX = e.clientX;
+        glowY = e.clientY;
+        if (!glowQueued) {
+          glowQueued = true;
+          window.requestAnimationFrame(applyGlow);
+        }
+      }, { passive: true });
+    }
+  } catch (err) { /* glow is decorative — never break the page */ }
+
   // ---- Service filters ----
   var chips = Array.prototype.slice.call(document.querySelectorAll("[data-filter]"));
   var cards = Array.prototype.slice.call(document.querySelectorAll("#service-grid .card"));
+  var groups = Array.prototype.slice.call(document.querySelectorAll("#service-grid .svc-group"));
   chips.forEach(function (chip) {
     chip.addEventListener("click", function () {
-      chips.forEach(function (c) { c.classList.remove("is-active"); });
+      chips.forEach(function (c) {
+        c.classList.remove("is-active");
+        c.removeAttribute("aria-pressed");
+      });
       chip.classList.add("is-active");
+      chip.setAttribute("aria-pressed", "true");
       var f = chip.getAttribute("data-filter");
       cards.forEach(function (card) {
         var show = f === "all" || card.getAttribute("data-category") === f;
         card.style.display = show ? "" : "none";
+        if (show) {
+          // Restart the subtle entrance so filtering feels alive (transform/opacity only).
+          card.style.animation = "none";
+          void card.offsetWidth;
+          card.style.animation = "";
+        }
+      });
+      // Hide empty group headings when filtering (keeps counts accurate).
+      groups.forEach(function (group) {
+        var visible = Array.prototype.filter.call(group.querySelectorAll(".card"), function (card) {
+          return card.style.display !== "none";
+        });
+        group.style.display = visible.length ? "" : "none";
       });
     });
   });

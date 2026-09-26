@@ -65,10 +65,10 @@
   }
   </script>
 </head>
-<body>
+<body id="top">
   <a class="skip-link" href="#main">Skip to content</a>
 
-  <header class="site-header" id="top">
+  <header class="site-header" id="site-header">
     <div class="container header-inner">
       <a class="brand" href="#home" aria-label="LORDS AGENCY home">
         <span class="brand-mark" aria-hidden="true">L</span>
@@ -84,7 +84,7 @@
         <a href="#faq">FAQ</a>
       </nav>
       <div class="header-actions">
-        <a class="btn btn-primary btn-sm" href="#contact">Start a Project</a>
+        <a class="btn btn-primary btn-sm header-cta" href="#contact">Start a Project</a>
         <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
           <span></span><span></span><span></span>
         </button>
@@ -97,225 +97,300 @@
     <section class="hero" id="home">
       <div class="container hero-grid">
         <div class="hero-copy">
-          <p class="eyebrow eyebrow-light">Custom Software &middot; AI &middot; Automation &middot; Real Business Impact</p>
+          <p class="eyebrow eyebrow-light">Custom Software &middot; AI &middot; Automation</p>
           <h1>Turning ideas into real software.</h1>
           <p class="lede">Custom software, AI and automation solutions designed around your business.</p>
-          <p class="hero-sub">We design, develop and deliver software solutions that help businesses work smarter, automate operations and scale — from MVP to long-term platform ownership.</p>
           <div class="hero-ctas">
-            <a class="btn btn-primary" href="#contact">Start a Project</a>
-            <a class="btn btn-ghost" href="#services">Explore Services</a>
+            <a class="btn btn-primary btn-lg" href="#contact">Start a Project</a>
+            <a class="btn btn-ghost btn-lg" href="#services">Explore Services</a>
           </div>
-          <ul class="hero-points" aria-label="How we work">
+          <ul class="hero-points" aria-label="Why work with us">
             <li>Business-first discovery</li>
-            <li>Custom-built, no shortcuts</li>
+            <li>Custom-built systems</li>
             <li>Support after launch</li>
           </ul>
         </div>
-        <aside class="hero-card" aria-label="Example project enquiry summary">
-          <div class="hero-card-head">
-            <span class="dot dot-green" aria-hidden="true"></span>
-            <p>Project brief &mdash; example</p>
+        <div class="hero-visual" aria-label="Illustrative software system architecture" role="img">
+          <div class="sys-window">
+            <div class="sys-bar" aria-hidden="true"><span></span><span></span><span></span><em>agency / operations</em></div>
+            <div class="sys-body">
+              <aside class="sys-side" aria-hidden="true">
+                <i class="on"></i><i></i><i></i><i></i><i></i>
+              </aside>
+              <div class="sys-main" aria-hidden="true">
+                <div class="sys-row">
+                  <div class="sys-chip"><b>CRM</b><span>pipeline</span></div>
+                  <div class="sys-chip"><b>Automation</b><span>workflows</span></div>
+                  <div class="sys-chip"><b>Payments</b><span>billing</span></div>
+                </div>
+                <div class="sys-panel">
+                  <div class="sys-panel-head"><b>Analytics</b><span class="live"><i></i>live</span></div>
+                  <div class="sys-bars"><i style="--h:42%"></i><i style="--h:68%"></i><i style="--h:55%"></i><i style="--h:84%"></i><i style="--h:63%"></i><i style="--h:92%"></i><i style="--h:74%"></i></div>
+                </div>
+                <div class="sys-row">
+                  <div class="sys-chip"><b>Users</b><span>roles &amp; auth</span></div>
+                  <div class="sys-chip"><b>API</b><span>integrations</span></div>
+                  <div class="sys-chip"><b>Notifications</b><span>alerts</span></div>
+                </div>
+              </div>
+            </div>
           </div>
-          <dl class="hero-card-body">
-            <div><dt>Type</dt><dd>Operations automation + dashboard</dd></div>
-            <div><dt>Stage</dt><dd>Manual process, ready to digitise</dd></div>
-            <div><dt>Scope</dt><dd>Discovery &rarr; MVP &rarr; rollout</dd></div>
-            <div><dt>Outcome</dt><dd>Less manual work, clear reporting</dd></div>
-          </dl>
-          <div class="hero-card-foot">
-            <p><strong>What you get:</strong> a scoped proposal, timeline and honest build / no-build advice.</p>
-            <a href="#contact">Tell us about your project &rarr;</a>
-          </div>
-        </aside>
+          <p class="sys-caption">Illustrative system mockup — not a client product.</p>
+        </div>
       </div>
     </section>
 
-    <!-- ============ TRUST STRIP ============ -->
-    <section class="strip" aria-label="Agency focus areas">
-      <div class="container strip-inner">
-        <span>Custom Software</span><span aria-hidden="true">&middot;</span>
-        <span>SaaS Products</span><span aria-hidden="true">&middot;</span>
-        <span>AI &amp; Automation</span><span aria-hidden="true">&middot;</span>
-        <span>CRM &amp; Operations</span><span aria-hidden="true">&middot;</span>
-        <span>Integrations &amp; Cloud</span>
+    <!-- ============ VALUE PROPOSITION ============ -->
+    <section class="section value" id="value">
+      <div class="container value-grid">
+        <div class="value-statement">
+          <p class="eyebrow">Why custom software</p>
+          <h2>Software should remove friction, not create more of it.</h2>
+          <p>We start with the business process, map the system, build only what is necessary, and leave you with software your team can actually operate.</p>
+        </div>
+        <div class="value-cards">
+          <article class="value-card">
+            <h3>Process first</h3>
+            <p>We map how work actually gets done before writing a line of code.</p>
+          </article>
+          <article class="value-card">
+            <h3>Lean scope</h3>
+            <p>Only the system you need — nothing bloated, nothing to babysit.</p>
+          </article>
+          <article class="value-card">
+            <h3>Operable systems</h3>
+            <p>Documented, handed over and trainable — your team runs it with confidence.</p>
+          </article>
+          <article class="value-card">
+            <h3>Long-term partner</h3>
+            <p>Maintenance, evolution and support from people who built the system.</p>
+          </article>
+        </div>
       </div>
     </section>
 
     <!-- ============ SERVICES ============ -->
-    <section class="section" id="services">
+    <section class="section services" id="services">
       <div class="container">
         <p class="eyebrow">Services</p>
-        <h2>One partner for the full software lifecycle.</h2>
-        <p class="section-lede">From first scope to long-term maintenance. Every engagement starts from your business process — not from a technology preference.</p>
+        <h2>Twenty-one services. One accountable partner.</h2>
+        <p class="section-lede">From first scope to long-term maintenance — grouped by what they do for your business. Every engagement starts from your process, not a technology preference.</p>
 
         <div class="filter-bar" role="group" aria-label="Filter services">
-          <button class="chip is-active" data-filter="all" type="button">All services</button>
-          <button class="chip" data-filter="build" type="button">Build</button>
-          <button class="chip" data-filter="intelligence" type="button">Automate &amp; intelligence</button>
-          <button class="chip" data-filter="systems" type="button">Business systems</button>
-          <button class="chip" data-filter="evolve" type="button">Evolve &amp; support</button>
+          <button class="chip is-active" data-filter="all" type="button" aria-pressed="true">All <span class="chip-count">21</span></button>
+          <button class="chip" data-filter="build" type="button" aria-pressed="false">Build</button>
+          <button class="chip" data-filter="intelligence" type="button" aria-pressed="false">Automate &amp; intelligence</button>
+          <button class="chip" data-filter="systems" type="button" aria-pressed="false">Business systems</button>
+          <button class="chip" data-filter="evolve" type="button" aria-pressed="false">Evolve &amp; support</button>
         </div>
 
-        <div class="cards" id="service-grid">
-          <article class="card" data-category="build">
-            <p class="card-no">01</p>
-            <h3>Custom Software Development</h3>
-            <p>Web platforms and internal tools built around your workflows, roles and reporting needs.</p>
-          </article>
-          <article class="card" data-category="build">
-            <p class="card-no">02</p>
-            <h3>SaaS Product Development</h3>
-            <p>Multi-tenant architecture, subscriptions, onboarding and admin tooling for products you sell.</p>
-          </article>
-          <article class="card" data-category="intelligence">
-            <p class="card-no">03</p>
-            <h3>Business Process Automation</h3>
-            <p>Replace spreadsheets, email chains and manual handoffs with reliable automated workflows.</p>
-          </article>
-          <article class="card" data-category="intelligence">
-            <p class="card-no">04</p>
-            <h3>AI &amp; Automation</h3>
-            <p>Practical AI: document extraction, classification, assistants and workflow copilots — scoped to ROI.</p>
-          </article>
-          <article class="card" data-category="systems">
-            <p class="card-no">05</p>
-            <h3>CRM &amp; Lead Management Systems</h3>
-            <p>Pipelines, follow-ups, assignments and reporting so no lead or task falls through the cracks.</p>
-          </article>
-          <article class="card" data-category="systems">
-            <p class="card-no">06</p>
-            <h3>LMS / Education Technology</h3>
-            <p>Courses, cohorts, assessments, progress tracking and certificates for training businesses.</p>
-          </article>
-          <article class="card" data-category="build">
-            <p class="card-no">07</p>
-            <h3>Mobile Application Development</h3>
-            <p>Field, operations and customer-facing apps that sync cleanly with your backend systems.</p>
-          </article>
-          <article class="card" data-category="systems">
-            <p class="card-no">08</p>
-            <h3>API &amp; System Integration</h3>
-            <p>Connect CRM, ERP, payments, messaging and legacy tools into one consistent flow of data.</p>
-          </article>
-          <article class="card" data-category="systems">
-            <p class="card-no">09</p>
-            <h3>Document &amp; Data Management</h3>
-            <p>Structured storage, search, versioning, approvals and audit trails for operational documents.</p>
-          </article>
-          <article class="card" data-category="intelligence">
-            <p class="card-no">10</p>
-            <h3>Dashboards &amp; Business Intelligence</h3>
-            <p>Role-based dashboards and reports that show performance, bottlenecks and next actions.</p>
-          </article>
-          <article class="card" data-category="systems">
-            <p class="card-no">11</p>
-            <h3>Authentication &amp; Security Architecture</h3>
-            <p>Roles, permissions, SSO, session control and secure defaults designed in from day one.</p>
-          </article>
-          <article class="card" data-category="evolve">
-            <p class="card-no">12</p>
-            <h3>Legacy System Modernization</h3>
-            <p>Rebuild, re-platform or strangler-migrate ageing systems without stopping the business.</p>
-          </article>
-          <article class="card" data-category="systems">
-            <p class="card-no">13</p>
-            <h3>Payment &amp; Billing Systems</h3>
-            <p>Subscriptions, invoices, collections and reconciliation flows integrated with your operations.</p>
-          </article>
-          <article class="card" data-category="intelligence">
-            <p class="card-no">14</p>
-            <h3>Real-Time Applications</h3>
-            <p>Live tracking, notifications, chat and status updates where timing actually matters.</p>
-          </article>
-          <article class="card" data-category="intelligence">
-            <p class="card-no">15</p>
-            <h3>Scheduling &amp; Workflow Systems</h3>
-            <p>Bookings, shifts, jobs and approvals with calendars, reminders and conflict handling.</p>
-          </article>
-          <article class="card" data-category="systems">
-            <p class="card-no">16</p>
-            <h3>Cloud &amp; Deployment</h3>
-            <p>Hosting, environments, backups and release pipelines set up for reliability and low cost.</p>
-          </article>
-          <article class="card" data-category="evolve">
-            <p class="card-no">17</p>
-            <h3>Software Maintenance &amp; Technical Takeover</h3>
-            <p>Take over an existing codebase: stabilise, document, fix and continue development safely.</p>
-          </article>
-          <article class="card" data-category="build">
-            <p class="card-no">18</p>
-            <h3>MVP Development &amp; Consulting</h3>
-            <p>Validate fast: lean scope, launchable MVP, and a clear path to v2 based on real usage.</p>
-          </article>
-          <article class="card" data-category="evolve">
-            <p class="card-no">19</p>
-            <h3>Software Audit &amp; Technical Consulting</h3>
-            <p>Independent review of architecture, code quality, security posture and build-vs-buy decisions.</p>
-          </article>
-          <article class="card" data-category="build">
-            <p class="card-no">20</p>
-            <h3>Dedicated Development Team</h3>
-            <p>A focused team that works inside your roadmap, rituals and priorities over the long term.</p>
-          </article>
-          <article class="card" data-category="evolve">
-            <p class="card-no">21</p>
-            <h3>Support &amp; Training</h3>
-            <p>Handover docs, admin training and responsive support so your team owns the system confidently.</p>
-          </article>
+        <div class="svc-groups" id="service-grid">
+          <section class="svc-group" aria-label="Build services">
+            <h3 class="svc-group-title">Build</h3>
+            <div class="cards">
+              <article class="card" data-category="build">
+                <p class="card-no">01 · Build</p>
+                <h4>Custom Software Development</h4>
+                <p>Web platforms and internal tools built around your workflows, roles and reporting needs.</p>
+              </article>
+              <article class="card" data-category="build">
+                <p class="card-no">02 · Build</p>
+                <h4>SaaS Product Development</h4>
+                <p>Multi-tenant architecture, subscriptions, onboarding and admin tooling for products you sell.</p>
+              </article>
+              <article class="card" data-category="build">
+                <p class="card-no">07 · Build</p>
+                <h4>Mobile Application Development</h4>
+                <p>Field, operations and customer-facing apps that sync cleanly with your backend systems.</p>
+              </article>
+              <article class="card" data-category="build">
+                <p class="card-no">18 · Build</p>
+                <h4>MVP Development &amp; Consulting</h4>
+                <p>Validate fast: lean scope, launchable MVP, and a clear path to v2 based on real usage.</p>
+              </article>
+              <article class="card" data-category="build">
+                <p class="card-no">20 · Build</p>
+                <h4>Dedicated Development Team</h4>
+                <p>A focused team that works inside your roadmap, rituals and priorities over the long term.</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="svc-group" aria-label="Automate and intelligence services">
+            <h3 class="svc-group-title">Automate &amp; Intelligence</h3>
+            <div class="cards">
+              <article class="card" data-category="intelligence">
+                <p class="card-no">03 · Automate</p>
+                <h4>Business Process Automation</h4>
+                <p>Replace spreadsheets, email chains and manual handoffs with reliable automated workflows.</p>
+              </article>
+              <article class="card" data-category="intelligence">
+                <p class="card-no">04 · Automate</p>
+                <h4>AI &amp; Automation</h4>
+                <p>Practical AI: document extraction, classification, assistants and workflow copilots — scoped to ROI.</p>
+              </article>
+              <article class="card" data-category="intelligence">
+                <p class="card-no">10 · Automate</p>
+                <h4>Dashboards &amp; Business Intelligence</h4>
+                <p>Role-based dashboards and reports that show performance, bottlenecks and next actions.</p>
+              </article>
+              <article class="card" data-category="intelligence">
+                <p class="card-no">14 · Automate</p>
+                <h4>Real-Time Applications</h4>
+                <p>Live tracking, notifications, chat and status updates where timing actually matters.</p>
+              </article>
+              <article class="card" data-category="intelligence">
+                <p class="card-no">15 · Automate</p>
+                <h4>Scheduling &amp; Workflow Systems</h4>
+                <p>Bookings, shifts, jobs and approvals with calendars, reminders and conflict handling.</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="svc-group" aria-label="Business system services">
+            <h3 class="svc-group-title">Business Systems</h3>
+            <div class="cards">
+              <article class="card" data-category="systems">
+                <p class="card-no">05 · Systems</p>
+                <h4>CRM &amp; Lead Management Systems</h4>
+                <p>Pipelines, follow-ups, assignments and reporting so no lead or task falls through the cracks.</p>
+              </article>
+              <article class="card" data-category="systems">
+                <p class="card-no">06 · Systems</p>
+                <h4>LMS / Education Technology</h4>
+                <p>Courses, cohorts, assessments, progress tracking and certificates for training businesses.</p>
+              </article>
+              <article class="card" data-category="systems">
+                <p class="card-no">08 · Systems</p>
+                <h4>API &amp; System Integration</h4>
+                <p>Connect CRM, ERP, payments, messaging and legacy tools into one consistent flow of data.</p>
+              </article>
+              <article class="card" data-category="systems">
+                <p class="card-no">09 · Systems</p>
+                <h4>Document &amp; Data Management</h4>
+                <p>Structured storage, search, versioning, approvals and audit trails for operational documents.</p>
+              </article>
+              <article class="card" data-category="systems">
+                <p class="card-no">11 · Systems</p>
+                <h4>Authentication &amp; Security Architecture</h4>
+                <p>Roles, permissions, SSO, session control and secure defaults designed in from day one.</p>
+              </article>
+              <article class="card" data-category="systems">
+                <p class="card-no">13 · Systems</p>
+                <h4>Payment &amp; Billing Systems</h4>
+                <p>Subscriptions, invoices, collections and reconciliation flows integrated with your operations.</p>
+              </article>
+              <article class="card" data-category="systems">
+                <p class="card-no">16 · Systems</p>
+                <h4>Cloud &amp; Deployment</h4>
+                <p>Hosting, environments, backups and release pipelines set up for reliability and low cost.</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="svc-group" aria-label="Evolve and support services">
+            <h3 class="svc-group-title">Evolve &amp; Support</h3>
+            <div class="cards">
+              <article class="card" data-category="evolve">
+                <p class="card-no">12 · Evolve</p>
+                <h4>Legacy System Modernization</h4>
+                <p>Rebuild, re-platform or strangler-migrate ageing systems without stopping the business.</p>
+              </article>
+              <article class="card" data-category="evolve">
+                <p class="card-no">17 · Evolve</p>
+                <h4>Software Maintenance &amp; Technical Takeover</h4>
+                <p>Take over an existing codebase: stabilise, document, fix and continue development safely.</p>
+              </article>
+              <article class="card" data-category="evolve">
+                <p class="card-no">19 · Evolve</p>
+                <h4>Software Audit &amp; Technical Consulting</h4>
+                <p>Independent review of architecture, code quality, security posture and build-vs-buy decisions.</p>
+              </article>
+              <article class="card" data-category="evolve">
+                <p class="card-no">21 · Evolve</p>
+                <h4>Support &amp; Training</h4>
+                <p>Handover docs, admin training and responsive support so your team owns the system confidently.</p>
+              </article>
+            </div>
+          </section>
         </div>
       </div>
     </section>
 
     <!-- ============ SOLUTIONS ============ -->
-    <section class="section section-dark" id="solutions">
+    <section class="section section-dark solutions" id="solutions">
       <div class="container">
         <p class="eyebrow eyebrow-light">Business problems &rarr; solutions</p>
-        <h2 class="light">Software that fixes the work, not just the website.</h2>
+        <h2 class="light">Your business has a workflow.<br />We turn it into a system.</h2>
         <p class="section-lede light-muted">If any of these sound familiar, that is exactly where we start.</p>
-        <div class="cards cards-dark">
-          <article class="card">
+        <div class="flow-grid">
+          <article class="flow-card">
             <h3>Operations run on spreadsheets &amp; WhatsApp</h3>
-            <p class="problem">Leads, jobs and follow-ups live in people's heads and phones.</p>
-            <p class="solution"><strong>We build:</strong> a central CRM / operations system with assignments, reminders and history.</p>
+            <p class="flow-label">Problem</p>
+            <p>Leads, jobs and follow-ups live in people's heads and phones.</p>
+            <p class="flow-label">System we build</p>
+            <p>A central CRM and operations system with assignments, reminders and history.</p>
+            <p class="flow-label">Business outcome</p>
+            <p>One shared view of the work — nothing depends on memory.</p>
           </article>
-          <article class="card">
+          <article class="flow-card">
             <h3>Systems don't talk to each other</h3>
-            <p class="problem">The same data is re-entered in three tools. Nothing reconciles.</p>
-            <p class="solution"><strong>We build:</strong> API integrations and a single source of truth with automated sync.</p>
+            <p class="flow-label">Problem</p>
+            <p>The same data is re-entered in three tools. Nothing reconciles.</p>
+            <p class="flow-label">System we build</p>
+            <p>API integrations and a single source of truth with automated sync.</p>
+            <p class="flow-label">Business outcome</p>
+            <p>Enter data once; every system stays consistent.</p>
           </article>
-          <article class="card">
+          <article class="flow-card">
             <h3>No visibility into the business</h3>
-            <p class="problem">Reports take days. Decisions are made on gut feeling.</p>
-            <p class="solution"><strong>We build:</strong> live dashboards for sales, operations, finance and delivery.</p>
+            <p class="flow-label">Problem</p>
+            <p>Reports take days. Decisions are made on gut feeling.</p>
+            <p class="flow-label">System we build</p>
+            <p>Live dashboards for sales, operations, finance and delivery.</p>
+            <p class="flow-label">Business outcome</p>
+            <p>Current numbers for every role, without manual reporting.</p>
           </article>
-          <article class="card">
+          <article class="flow-card">
             <h3>Manual work doesn't scale</h3>
-            <p class="problem">Every new customer adds the same admin overhead.</p>
-            <p class="solution"><strong>We build:</strong> automated onboarding, billing, scheduling and notification flows.</p>
+            <p class="flow-label">Problem</p>
+            <p>Every new customer adds the same admin overhead.</p>
+            <p class="flow-label">System we build</p>
+            <p>Automated onboarding, billing, scheduling and notification flows.</p>
+            <p class="flow-label">Business outcome</p>
+            <p>Growth adds customers, not admin headcount.</p>
           </article>
-          <article class="card">
+          <article class="flow-card">
             <h3>Legacy software holds you back</h3>
-            <p class="problem">An old system is slow, fragile, and nobody wants to touch it.</p>
-            <p class="solution"><strong>We build:</strong> a staged modernization plan — stabilise first, then migrate safely.</p>
+            <p class="flow-label">Problem</p>
+            <p>An old system is slow, fragile, and nobody wants to touch it.</p>
+            <p class="flow-label">System we build</p>
+            <p>A staged modernization plan — stabilise first, then migrate safely.</p>
+            <p class="flow-label">Business outcome</p>
+            <p>A maintainable system, migrated without stopping the business.</p>
           </article>
-          <article class="card">
+          <article class="flow-card">
             <h3>AI sounds useful, but where?</h3>
-            <p class="problem">Generic AI demos don't map to your actual process.</p>
-            <p class="solution"><strong>We build:</strong> narrow, measurable AI pilots tied to one workflow and one metric.</p>
+            <p class="flow-label">Problem</p>
+            <p>Generic AI demos don't map to your actual process.</p>
+            <p class="flow-label">System we build</p>
+            <p>Narrow, measurable AI pilots tied to one workflow and one metric.</p>
+            <p class="flow-label">Business outcome</p>
+            <p>AI that serves a defined job instead of a demo.</p>
           </article>
         </div>
       </div>
     </section>
 
     <!-- ============ WORK ============ -->
-    <section class="section" id="work">
+    <section class="section work" id="work">
       <div class="container">
         <p class="eyebrow">Selected Work</p>
-        <h2>What we've built — stated honestly.</h2>
+        <h2>Software we stand behind.</h2>
         <p class="section-lede">We distinguish between <strong>internal / proprietary products</strong> we own and <strong>client engagements</strong>, which are confidential by default. We don't publish client names, figures or testimonials without permission — and we never invent them.</p>
 
-        <div class="work-grid">
-          <article class="work-card work-internal">
+        <article class="case">
+          <div class="case-copy">
             <p class="badge badge-internal">Internal / Proprietary</p>
             <h3>MasterInTech — Learning Management Platform</h3>
             <p>An education-technology platform designed and built by LORDS AGENCY for structured courses, learners, assessments and progress tracking. It serves as both a working product and our reference architecture for LMS, authentication, dashboards and content-management builds.</p>
@@ -328,8 +403,24 @@
               <li>Content management</li>
             </ul>
             <p class="work-note">Proprietary build. Available for walkthrough on a discovery call.</p>
-          </article>
+          </div>
+          <div class="case-visual" aria-label="Illustrative learning-platform interface" role="img">
+            <div class="mock">
+              <div class="mock-bar" aria-hidden="true"><span></span><span></span><span></span><em>masterintech / dashboard</em></div>
+              <div class="mock-body" aria-hidden="true">
+                <div class="mock-side"><i class="on"></i><i></i><i></i><i></i></div>
+                <div class="mock-main">
+                  <div class="mock-cards"><i></i><i></i><i></i></div>
+                  <div class="mock-course"><b></b><span style="--w:82%"></span><span style="--w:64%"></span><em style="--w:45%"></em></div>
+                  <div class="mock-course"><b></b><span style="--w:70%"></span><span style="--w:52%"></span><em style="--w:30%"></em></div>
+                </div>
+              </div>
+            </div>
+            <p class="sys-caption">Illustrative interface mockup — not a client product.</p>
+          </div>
+        </article>
 
+        <div class="work-grid">
           <article class="work-card">
             <p class="badge badge-client">Project Reference</p>
             <h3>Multi-Vendor Marketplace — E-commerce Platform</h3>
@@ -378,12 +469,12 @@
     </section>
 
     <!-- ============ PROCESS ============ -->
-    <section class="section section-muted" id="process">
+    <section class="section section-muted process" id="process">
       <div class="container">
         <p class="eyebrow">Process</p>
-        <h2>A calm, transparent delivery process.</h2>
+        <h2>From first call to long-term platform.</h2>
         <p class="section-lede">You always know what stage you're at, what happens next, and what it costs.</p>
-        <ol class="steps">
+        <ol class="timeline">
           <li>
             <span class="step-no">01</span>
             <h3>Enquiry</h3>
@@ -397,7 +488,7 @@
           <li>
             <span class="step-no">03</span>
             <h3>Architecture, design &amp; build</h3>
-            <p>System architecture first, then short build iterations with demos on real data. You see working software early, not screenshots at the end. Each phase is confirmed with fixed scope, timeline, price and ownership.</p>
+            <p>System architecture first, then short build iterations with demos on real data. Each phase is confirmed with fixed scope, timeline, price and ownership.</p>
           </li>
           <li>
             <span class="step-no">04</span>
@@ -419,119 +510,105 @@
     </section>
 
     <!-- ============ TECHNOLOGY ============ -->
-    <section class="section" id="stack">
+    <section class="section stack" id="stack">
       <div class="container">
         <p class="eyebrow">Technology</p>
-        <h2>Boring where it should be. Modern where it matters.</h2>
-        <p class="section-lede">We choose proven stacks that are easy to hire for, host affordably and maintain for years. Exact choices depend on your project — below are the capabilities we work with.</p>
-        <div class="stack-grid">
-          <div class="stack-group">
-            <h3>Web &amp; product</h3>
-            <p>Responsive web apps, admin panels, customer portals, SaaS frontends</p>
+        <h2>An engineering capability matrix.</h2>
+        <p class="section-lede">Depending on project requirements, we work across the following stacks and capabilities. We choose proven tooling that is easy to hire for, host affordably and maintain for years.</p>
+        <div class="matrix">
+          <div class="matrix-group">
+            <h3>Frontend</h3>
+            <ul><li>React</li><li>TypeScript</li><li>JavaScript</li><li>HTML / CSS</li></ul>
           </div>
-          <div class="stack-group">
-            <h3>Backend &amp; APIs</h3>
-            <p>REST APIs, webhooks, background jobs, role-based access, audit logs</p>
+          <div class="matrix-group">
+            <h3>Backend</h3>
+            <ul><li>Laravel</li><li>PHP</li><li>REST APIs</li></ul>
           </div>
-          <div class="stack-group">
-            <h3>Mobile</h3>
-            <p>Cross-platform apps with offline-friendly sync for field &amp; operations teams</p>
+          <div class="matrix-group">
+            <h3>Data</h3>
+            <ul><li>PostgreSQL</li><li>Redis</li><li>Object Storage</li></ul>
           </div>
-          <div class="stack-group">
-            <h3>Data &amp; BI</h3>
-            <p>Structured databases, reporting layers, dashboards, exports</p>
+          <div class="matrix-group">
+            <h3>Infrastructure</h3>
+            <ul><li>Linux</li><li>Nginx</li><li>Docker</li><li>Cloud deployment</li></ul>
           </div>
-          <div class="stack-group">
-            <h3>AI &amp; automation</h3>
-            <p>Workflow automation, document AI, chat assistants, scheduled pipelines</p>
+          <div class="matrix-group">
+            <h3>Integrations</h3>
+            <ul><li>Payments</li><li>Email</li><li>Notifications</li><li>Live systems</li><li>External APIs</li></ul>
           </div>
-          <div class="stack-group">
-            <h3>Cloud &amp; DevOps</h3>
-            <p>Managed hosting, environments, backups, CI/CD, domains &amp; SSL</p>
-          </div>
-          <div class="stack-group">
-            <h3>Security &amp; identity</h3>
-            <p>Auth, SSO-ready design, permissions, encryption in transit &amp; at rest</p>
-          </div>
-          <div class="stack-group">
-            <h3>Payments &amp; integrations</h3>
-            <p>Billing flows, invoicing support, CRM/ERP connectors, messaging APIs</p>
+          <div class="matrix-group">
+            <h3>AI &amp; Automation</h3>
+            <ul><li>AI APIs</li><li>Workflow automation</li><li>Document processing</li><li>AI-assisted systems</li></ul>
           </div>
         </div>
-        <p class="fine-print">We deliberately avoid locking you into exotic tooling. You get documented, transferable systems your future team can run.</p>
+        <p class="fine-print">Not every technology is used on every project — choices follow your requirements. You get documented, transferable systems your future team can run.</p>
       </div>
     </section>
 
     <!-- ============ ABOUT ============ -->
-    <section class="section section-dark" id="about">
-      <div class="container about-grid">
-        <div>
-          <p class="eyebrow eyebrow-light">About</p>
-          <h2 class="light">A software agency, not a freelancer marketplace.</h2>
-          <p class="light-muted">LORDS AGENCY is a software development agency. We work with businesses that need custom systems — not templates — and want a technical partner who understands operations, not just code.</p>
-          <p class="light-muted">Based in Guntur, Andhra Pradesh, India.</p>
-          <ul class="check-list check-light">
-            <li><strong>Business-first:</strong> we map the process before writing code.</li>
-            <li><strong>Ownership:</strong> you own the codebase, data and documentation.</li>
-            <li><strong>Honesty:</strong> if off-the-shelf software fits better, we'll say so.</li>
-            <li><strong>Long-term:</strong> we build systems we are willing to maintain.</li>
-          </ul>
-        </div>
-        <div class="about-cards">
-          <div class="about-card">
-            <h3>What we do best</h3>
-            <p>Internal tools, SaaS MVPs, automation, CRM/LMS platforms, integrations and dashboards — scoped, built and supported end-to-end.</p>
+    <section class="section section-dark about" id="about">
+      <div class="container">
+        <p class="eyebrow eyebrow-light">About</p>
+        <h2 class="light">Build &middot; Automate &middot; Innovate &middot; Grow</h2>
+        <p class="section-lede light-muted">Technology for a Brighter Tomorrow.</p>
+        <div class="about-grid">
+          <div class="about-main">
+            <p class="light-muted">LORDS AGENCY is a software development agency. We work with businesses that need custom systems — not templates — and want a technical partner who understands operations, not just code.</p>
+            <p class="light-muted">Based in Guntur, Andhra Pradesh, India.</p>
+            <ul class="check-list check-light">
+              <li><strong>Business-first discovery:</strong> we map the process before writing code.</li>
+              <li><strong>Custom engineering:</strong> systems designed around your workflows.</li>
+              <li><strong>Practical automation:</strong> narrow, measurable automation tied to real work.</li>
+              <li><strong>Long-term maintainability:</strong> we build systems we are willing to maintain.</li>
+              <li><strong>Honest scope:</strong> if off-the-shelf software fits better, we'll say so.</li>
+              <li><strong>Support after launch:</strong> maintenance, training and evolution.</li>
+            </ul>
           </div>
-          <div class="about-card">
-            <h3>What we don't do</h3>
-            <p>No template flipping, no fake portfolios, no inflated claims. No project starts without a written scope both sides understand.</p>
+          <div class="about-cards">
+            <div class="about-card">
+              <h3>What we do best</h3>
+              <p>Internal tools, SaaS MVPs, automation, CRM/LMS platforms, integrations and dashboards — scoped, built and supported end-to-end.</p>
+            </div>
+            <div class="about-card">
+              <h3>What we don't do</h3>
+              <p>No template flipping, no fake portfolios, no inflated claims. No project starts without a written scope both sides understand.</p>
+            </div>
+            <div class="about-card">
+              <h3>How we engage</h3>
+              <p>Fixed-scope builds, monthly dedicated teams, technical takeovers and audits. Start with a brief — get a straight answer.</p>
+            </div>
           </div>
-          <div class="about-card">
-            <h3>How we engage</h3>
-            <p>Fixed-scope builds, monthly dedicated teams, technical takeovers and audits. Start with a brief — get a straight answer.</p>
-          </div>
-          <p class="about-motto">Build &middot; Automate &middot; Innovate &middot; Grow</p>
         </div>
       </div>
     </section>
 
     <!-- ============ FAQ ============ -->
-    <section class="section" id="faq">
+    <section class="section faq-section" id="faq">
       <div class="container narrow">
         <p class="eyebrow">FAQ</p>
         <h2>Straight answers.</h2>
+
+        <h3 class="faq-group-title">Starting a project</h3>
         <div class="faq">
           <details>
             <summary>How do we start?</summary>
             <p>Send a project brief below. We review it, and if there's a fit we schedule a discovery call, then send a written proposal with scope, timeline and price.</p>
           </details>
           <details>
-            <summary>How much does custom software cost?</summary>
-            <p>It depends on scope, integrations and timeline. Small internal tools and MVPs cost far less than multi-role SaaS platforms. After discovery you get a fixed, phased quote — never an open-ended meter.</p>
-          </details>
-          <details>
-            <summary>How long does a typical project take?</summary>
-            <p>A focused MVP or internal tool is typically weeks to a few months. Larger platforms are phased so you get usable releases early. Your proposal includes milestones, not just a final date.</p>
-          </details>
-          <details>
-            <summary>Do we own the code and data?</summary>
-            <p>Yes. You own the codebase, documentation and data. We hand over repositories, credentials and admin access at launch.</p>
-          </details>
-          <details>
-            <summary>Can you take over our existing system?</summary>
-            <p>Yes — that's a dedicated service. We audit the codebase, stabilise critical issues, document it, then continue development. If the system isn't worth saving, we'll tell you before you spend more.</p>
-          </details>
-          <details>
-            <summary>Can you integrate with tools we already use?</summary>
-            <p>In most cases, yes — CRMs, payment providers, messaging, spreadsheets and internal databases via APIs, webhooks or scheduled sync. Discovery confirms what's technically possible.</p>
-          </details>
-          <details>
-            <summary>Do you provide support after launch?</summary>
-            <p>Yes. Maintenance, fixes, small improvements and training are part of our Support &amp; Training and Maintenance services, or a monthly dedicated arrangement.</p>
-          </details>
-          <details>
             <summary>What do you need from us to give an accurate quote?</summary>
             <p>The brief below covers it: what you're trying to achieve, your current stage, timeline, and how the process works today. Screenshots, sample files or a short screen recording help a lot.</p>
+          </details>
+          <details>
+            <summary>When can we contact LORDS AGENCY?</summary>
+            <p>Project enquiries are welcome 24/7. We typically respond within 24 hours and can arrange the appropriate discovery or technical discussion based on the enquiry.</p>
+          </details>
+        </div>
+
+        <h3 class="faq-group-title">Cost &amp; timeline</h3>
+        <div class="faq">
+          <details>
+            <summary>How much does custom software cost?</summary>
+            <p>It depends on scope, integrations and timeline. Small internal tools and MVPs cost far less than multi-role SaaS platforms. After discovery you get a fixed, phased quote — never an open-ended meter.</p>
           </details>
           <details>
             <summary>How do you price projects?</summary>
@@ -542,16 +619,40 @@
             <p>Eligible first-time clients may receive up to 85% off selected services. The applicable offer depends on the project scope, complexity and agreed engagement.</p>
           </details>
           <details>
+            <summary>How long does a typical project take?</summary>
+            <p>A focused MVP or internal tool is typically weeks to a few months. Larger platforms are phased so you get usable releases early. Your proposal includes milestones, not just a final date.</p>
+          </details>
+        </div>
+
+        <h3 class="faq-group-title">Technical</h3>
+        <div class="faq">
+          <details>
+            <summary>Do we own the code and data?</summary>
+            <p>Yes. You own the codebase, documentation and data. We hand over repositories, credentials and admin access at launch.</p>
+          </details>
+          <details>
+            <summary>Can you take over our existing system?</summary>
+            <p>Yes — that's a dedicated service. We audit the codebase, stabilise critical issues, document it, then continue development. If the system isn't worth saving, we'll tell you before you spend more.</p>
+          </details>
+          <details>
             <summary>What if we already have software?</summary>
             <p>We can improve, maintain, integrate or take over existing applications. Eligible minor adjustments may be provided at no additional development charge when the requested work falls within the agreed scope.</p>
+          </details>
+          <details>
+            <summary>Can you integrate with tools we already use?</summary>
+            <p>In most cases, yes — CRMs, payment providers, messaging, spreadsheets and internal databases via APIs, webhooks or scheduled sync. Discovery confirms what's technically possible.</p>
           </details>
           <details>
             <summary>How do you test software quality?</summary>
             <p>Projects include structured functional testing, validation and review before production release. Testing depth is matched to the system's scope, integrations, security requirements and risk.</p>
           </details>
+        </div>
+
+        <h3 class="faq-group-title">Working together</h3>
+        <div class="faq">
           <details>
-            <summary>When can we contact LORDS AGENCY?</summary>
-            <p>Project enquiries are welcome 24/7. We typically respond within 24 hours and can arrange the appropriate discovery or technical discussion based on the enquiry.</p>
+            <summary>Do you provide support after launch?</summary>
+            <p>Yes. Maintenance, fixes, small improvements and training are part of our Support &amp; Training and Maintenance services, or a monthly dedicated arrangement.</p>
           </details>
           <details>
             <summary>Do you sign NDAs?</summary>
@@ -566,153 +667,160 @@
     </section>
 
     <!-- ============ CONTACT ============ -->
-    <section class="section section-muted" id="contact">
-      <div class="container contact-grid">
-        <div>
-          <p class="eyebrow">Contact / Start a Project</p>
-          <h2>Tell us about your project.</h2>
-          <p class="section-lede">Send a detailed brief. We review every enquiry personally and reply with next steps or honest no-fit feedback.</p>
-          <ol class="next-steps">
-            <li><strong>1.</strong> You submit the brief (2–3 minutes).</li>
-            <li><strong>2.</strong> We review and follow up with clarifying questions.</li>
-            <li><strong>3.</strong> Discovery call &rarr; written proposal.</li>
-          </ol>
-          <div class="contact-alt">
-            <p><strong>Prefer email?</strong></p>
-            <p>Write to <a id="contact-email-link" href="mailto:venkatesh99.info@gmail.com?subject=Project%20enquiry%20—%20LORDS%20AGENCY">venkatesh99.info@gmail.com</a> with the same details.</p>
-            <p>Phone: <a href="tel:+918309146297">+91 8309146297</a> &middot; <a href="tel:+919441036863">+91 9441036863</a></p>
-            <p>WhatsApp: <a href="https://wa.me/918309146297">+91 8309146297</a> &middot; <a href="https://wa.me/919441036863">+91 9441036863</a></p>
-            <p class="fine-print">Available 24/7 for enquiries &middot; Typical response within 24 hours.</p>
+    <section class="section section-muted contact" id="contact">
+      <div class="container">
+        <p class="eyebrow">Contact / Start a Project</p>
+        <h2>Have a software problem worth solving?</h2>
+        <p class="section-lede">Tell us what you're trying to build, automate or improve.</p>
+        <div class="contact-grid">
+          <div class="contact-info">
+            <h3>Start a Project</h3>
+            <ol class="next-steps">
+              <li><strong>1.</strong> You submit the brief (2–3 minutes).</li>
+              <li><strong>2.</strong> We review and follow up with clarifying questions.</li>
+              <li><strong>3.</strong> Discovery call &rarr; written proposal.</li>
+            </ol>
+            <h3>What happens next</h3>
+            <p>Every enquiry is reviewed personally. Expect next steps or honest no-fit feedback — typically within 24 hours.</p>
+            <h3>Contact channels</h3>
+            <ul class="contact-channels">
+              <li>Email: <a id="contact-email-link" href="mailto:venkatesh99.info@gmail.com?subject=Project%20enquiry%20—%20LORDS%20AGENCY">venkatesh99.info@gmail.com</a></li>
+              <li>Phone: <a href="tel:+918309146297">+91 8309146297</a> &middot; <a href="tel:+919441036863">+91 9441036863</a></li>
+              <li>WhatsApp: <a href="https://wa.me/918309146297">+91 8309146297</a> &middot; <a href="https://wa.me/919441036863">+91 9441036863</a></li>
+              <li>Guntur, Andhra Pradesh, India</li>
+              <li>Available 24/7 for enquiries &middot; Typical response within 24 hours</li>
+            </ul>
             <p class="fine-print">By submitting, you agree to be contacted about your enquiry. No newsletters, no sharing your data.</p>
           </div>
+
+          <!--
+            PIPELINE (internal, for future backend):
+            NEW -> REVIEWING -> QUALIFIED -> DISCOVERY -> PROPOSAL -> NEGOTIATION -> WON/LOST
+            v1 is static: the form validates client-side and composes an email draft
+            (data-pipeline-stage="NEW"). Wire `form.action` to Formspree/FormBackend later
+            without changing field names.
+          -->
+          <form id="project-form" class="project-form" novalidate data-pipeline-stage="NEW">
+            <h3 class="form-title">Project enquiry</h3>
+
+            <div class="field-grid">
+              <div class="field">
+                <label for="f-type">Project type *</label>
+                <select id="f-type" name="project_type" required>
+                  <option value="">Select…</option>
+                  <option>Custom Software Development</option>
+                  <option>SaaS Product Development</option>
+                  <option>Business Process Automation</option>
+                  <option>AI &amp; Automation</option>
+                  <option>CRM &amp; Lead Management System</option>
+                  <option>LMS / Education Technology</option>
+                  <option>Mobile Application Development</option>
+                  <option>API &amp; System Integration</option>
+                  <option>Document &amp; Data Management System</option>
+                  <option>Dashboard &amp; Business Intelligence</option>
+                  <option>Authentication &amp; Security Architecture</option>
+                  <option>Legacy System Modernization</option>
+                  <option>Payment &amp; Billing System</option>
+                  <option>Real-Time Application</option>
+                  <option>Scheduling &amp; Workflow System</option>
+                  <option>Cloud &amp; Deployment</option>
+                  <option>Software Maintenance &amp; Technical Takeover</option>
+                  <option>MVP Development &amp; Consulting</option>
+                  <option>Software Audit &amp; Technical Consulting</option>
+                  <option>Dedicated Development Team</option>
+                  <option>Support &amp; Training</option>
+                  <option>Other / Not sure yet</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="f-stage">Current stage *</label>
+                <select id="f-stage" name="current_stage" required>
+                  <option value="">Select…</option>
+                  <option>Just an idea</option>
+                  <option>Validated concept / requirements drafted</option>
+                  <option>Existing system to improve or replace</option>
+                  <option>MVP in use, need to scale / harden</option>
+                  <option>Need a team / long-term partner</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="f-timeline">Timeline *</label>
+                <select id="f-timeline" name="timeline" required>
+                  <option value="">Select…</option>
+                  <option>ASAP</option>
+                  <option>1–3 months</option>
+                  <option>3–6 months</option>
+                  <option>Flexible / to discuss</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="f-budget">Budget <span class="optional">(optional)</span></label>
+                <select id="f-budget" name="budget">
+                  <option value="">Prefer not to say yet</option>
+                  <option>To be scoped</option>
+                  <option>Small — MVP / single workflow</option>
+                  <option>Medium — multi-role system</option>
+                  <option>Significant — platform / long-term</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="f-desc">Project description *</label>
+              <textarea id="f-desc" name="description" rows="5" maxlength="4000" required placeholder="What should the software do? Who uses it? What happens today without it? Any tools it must connect to?"></textarea>
+              <p class="char-count"><span id="desc-count">0</span> / 4000</p>
+            </div>
+
+            <div class="field-grid">
+              <div class="field">
+                <label for="f-name">Full name *</label>
+                <input id="f-name" name="name" type="text" autocomplete="name" required placeholder="Jane Doe" />
+              </div>
+              <div class="field">
+                <label for="f-company">Company</label>
+                <input id="f-company" name="company" type="text" autocomplete="organization" placeholder="Company Ltd." />
+              </div>
+              <div class="field">
+                <label for="f-email">Business email *</label>
+                <input id="f-email" name="email" type="email" autocomplete="email" required placeholder="jane@company.com" />
+              </div>
+              <div class="field">
+                <label for="f-phone">Phone / WhatsApp *</label>
+                <input id="f-phone" name="phone" type="tel" autocomplete="tel" required placeholder="+… " />
+              </div>
+              <div class="field">
+                <label for="f-country">Country *</label>
+                <input id="f-country" name="country" type="text" autocomplete="country-name" required placeholder="Country" />
+              </div>
+              <div class="field">
+                <label for="f-website">Website <span class="optional">(optional)</span></label>
+                <input id="f-website" name="website" type="url" inputmode="url" autocomplete="url" placeholder="https://" />
+              </div>
+            </div>
+
+            <!-- Honeypot for future backend spam protection. Leave empty. -->
+            <input type="text" name="company_website_confirm" tabindex="-1" autocomplete="off" class="honeypot" aria-hidden="true" />
+
+            <p class="form-error" id="form-error" role="alert" hidden></p>
+
+            <div class="form-actions">
+              <button class="btn btn-primary" type="submit">Send project enquiry</button>
+              <button class="btn btn-secondary" type="button" id="copy-brief">Copy brief</button>
+            </div>
+            <div class="form-success" id="form-success" role="status" hidden>
+              <p><strong>Email draft prepared — not sent.</strong> Your email app should open with everything pre-filled — review it and press Send. If it didn't open, use Copy brief or Open email manually.</p>
+              <a class="btn btn-secondary" id="mailto-fallback" href="mailto:venkatesh99.info@gmail.com">Open email manually</a>
+            </div>
+          </form>
         </div>
-
-        <!--
-          PIPELINE (internal, for future backend):
-          NEW -> REVIEWING -> QUALIFIED -> DISCOVERY -> PROPOSAL -> NEGOTIATION -> WON/LOST
-          v1 is static: the form validates client-side and composes an email draft
-          (data-pipeline-stage="NEW"). Wire `form.action` to Formspree/FormBackend later
-          without changing field names.
-        -->
-        <form id="project-form" class="project-form" novalidate data-pipeline-stage="NEW">
-          <h3 class="form-title">Project enquiry</h3>
-
-          <div class="field-grid">
-            <div class="field">
-              <label for="f-type">Project type *</label>
-              <select id="f-type" name="project_type" required>
-                <option value="">Select…</option>
-                <option>Custom Software Development</option>
-                <option>SaaS Product Development</option>
-                <option>Business Process Automation</option>
-                <option>AI &amp; Automation</option>
-                <option>CRM &amp; Lead Management System</option>
-                <option>LMS / Education Technology</option>
-                <option>Mobile Application Development</option>
-                <option>API &amp; System Integration</option>
-                <option>Document &amp; Data Management System</option>
-                <option>Dashboard &amp; Business Intelligence</option>
-                <option>Authentication &amp; Security Architecture</option>
-                <option>Legacy System Modernization</option>
-                <option>Payment &amp; Billing System</option>
-                <option>Real-Time Application</option>
-                <option>Scheduling &amp; Workflow System</option>
-                <option>Cloud &amp; Deployment</option>
-                <option>Software Maintenance &amp; Technical Takeover</option>
-                <option>MVP Development &amp; Consulting</option>
-                <option>Software Audit &amp; Technical Consulting</option>
-                <option>Dedicated Development Team</option>
-                <option>Support &amp; Training</option>
-                <option>Other / Not sure yet</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="f-stage">Current stage *</label>
-              <select id="f-stage" name="current_stage" required>
-                <option value="">Select…</option>
-                <option>Just an idea</option>
-                <option>Validated concept / requirements drafted</option>
-                <option>Existing system to improve or replace</option>
-                <option>MVP in use, need to scale / harden</option>
-                <option>Need a team / long-term partner</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="f-timeline">Timeline *</label>
-              <select id="f-timeline" name="timeline" required>
-                <option value="">Select…</option>
-                <option>ASAP</option>
-                <option>1–3 months</option>
-                <option>3–6 months</option>
-                <option>Flexible / to discuss</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="f-budget">Budget <span class="optional">(optional)</span></label>
-              <select id="f-budget" name="budget">
-                <option value="">Prefer not to say yet</option>
-                <option>To be scoped</option>
-                <option>Small — MVP / single workflow</option>
-                <option>Medium — multi-role system</option>
-                <option>Significant — platform / long-term</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="field">
-            <label for="f-desc">Project description *</label>
-            <textarea id="f-desc" name="description" rows="5" maxlength="4000" required placeholder="What should the software do? Who uses it? What happens today without it? Any tools it must connect to?"></textarea>
-            <p class="char-count"><span id="desc-count">0</span> / 4000</p>
-          </div>
-
-          <div class="field-grid">
-            <div class="field">
-              <label for="f-name">Full name *</label>
-              <input id="f-name" name="name" type="text" autocomplete="name" required placeholder="Jane Doe" />
-            </div>
-            <div class="field">
-              <label for="f-company">Company</label>
-              <input id="f-company" name="company" type="text" autocomplete="organization" placeholder="Company Ltd." />
-            </div>
-            <div class="field">
-              <label for="f-email">Business email *</label>
-              <input id="f-email" name="email" type="email" autocomplete="email" required placeholder="jane@company.com" />
-            </div>
-            <div class="field">
-              <label for="f-phone">Phone / WhatsApp *</label>
-              <input id="f-phone" name="phone" type="tel" autocomplete="tel" required placeholder="+… " />
-            </div>
-            <div class="field">
-              <label for="f-country">Country *</label>
-              <input id="f-country" name="country" type="text" autocomplete="country-name" required placeholder="Country" />
-            </div>
-            <div class="field">
-              <label for="f-website">Website <span class="optional">(optional)</span></label>
-              <input id="f-website" name="website" type="url" inputmode="url" autocomplete="url" placeholder="https://" />
-            </div>
-          </div>
-
-          <!-- Honeypot for future backend spam protection. Leave empty. -->
-          <input type="text" name="company_website_confirm" tabindex="-1" autocomplete="off" class="honeypot" aria-hidden="true" />
-
-          <p class="form-error" id="form-error" role="alert" hidden></p>
-
-          <div class="form-actions">
-            <button class="btn btn-primary" type="submit">Send project enquiry</button>
-            <button class="btn btn-secondary" type="button" id="copy-brief">Copy brief</button>
-          </div>
-          <div class="form-success" id="form-success" role="status" hidden>
-            <p><strong>Email draft prepared — not sent.</strong> Your email app should open with everything pre-filled — review it and press Send. If it didn't open, use Copy brief or Open email manually.</p>
-            <a class="btn btn-secondary" id="mailto-fallback" href="mailto:venkatesh99.info@gmail.com">Open email manually</a>
-          </div>
-        </form>
       </div>
     </section>
-    <!-- ============ PRIVACY & TERMS ============ -->
-    <section class="section" id="legal">
+
+    <!-- ============ LEGAL ============ -->
+    <section class="section legal" id="legal">
       <div class="container narrow">
         <p class="eyebrow">Privacy &amp; Terms</p>
-        <h2>Plain terms, no fine print tricks.</h2>
+        <h2>Plain terms, no fine-print tricks.</h2>
         <div class="faq">
           <details>
             <summary>How is my enquiry information used?</summary>
@@ -737,14 +845,15 @@
 
   <footer class="footer">
     <div class="container footer-grid">
-      <div>
+      <div class="footer-brand">
         <p class="brand-text">LORDS <span>AGENCY</span></p>
-        <p class="footer-tag">Custom Software. AI. Automation. Real Business Impact.</p>
+        <p class="footer-tag">Turning ideas into real software.</p>
+        <p class="footer-motto">Build &middot; Automate &middot; Innovate &middot; Grow</p>
         <p class="fine-print">Technology for a Brighter Tomorrow.</p>
         <p class="fine-print">We design, develop and deliver software solutions that help businesses work smarter, automate operations and scale.</p>
       </div>
       <nav aria-label="Footer">
-        <p class="footer-head">Explore</p>
+        <p class="footer-head">Navigation</p>
         <a href="#services">Services</a>
         <a href="#solutions">Solutions</a>
         <a href="#work">Work</a>
@@ -752,22 +861,21 @@
         <a href="#stack">Technology</a>
         <a href="#about">About</a>
         <a href="#faq">FAQ</a>
-        <a href="#legal">Privacy &amp; Terms</a>
-        <a href="#contact">Start a Project</a>
+        <a href="#contact">Contact</a>
+        <a href="#legal">Legal</a>
       </nav>
-      <div>
-        <p class="footer-head">Start a project</p>
-        <p>Tell us about your goals, timeline and current process.</p>
-        <a class="btn btn-primary btn-sm" href="#contact">Start a Project</a>
-        <p class="fine-print footer-mail">venkatesh99.info@gmail.com</p>
-        <p class="fine-print">Based in Guntur, Andhra Pradesh, India.</p>
-        <p class="fine-print"><a href="tel:+918309146297">+91 8309146297</a> &middot; <a href="tel:+919441036863">+91 9441036863</a></p>
+      <div class="footer-contact">
+        <p class="footer-head">Contact</p>
+        <p><a href="mailto:venkatesh99.info@gmail.com">venkatesh99.info@gmail.com</a></p>
+        <p><a href="tel:+918309146297">+91 8309146297</a> &middot; <a href="tel:+919441036863">+91 9441036863</a></p>
+        <p class="fine-print">Guntur, Andhra Pradesh, India</p>
         <p class="fine-print">Available 24/7 for enquiries &middot; Typical response within 24 hours.</p>
+        <a class="btn btn-primary btn-sm" href="#contact">Start a Project</a>
       </div>
     </div>
     <div class="container footer-base">
       <p>&copy; <span id="year">2026</span> LORDS AGENCY. All rights reserved.</p>
-      <a href="#top">Back to top &uarr;</a>
+      <a href="#home">Back to top &uarr;</a>
     </div>
   </footer>
 
