@@ -343,6 +343,57 @@
     }
   } catch (err) { /* depth is decorative — never break the page */ }
 
+  // ---- Magnetic CTA (fine pointer only) ----
+  // The offset is ATTRACTIVE: it is proportional to the signed distance from
+  // the button's centre, so the button always moves toward the cursor and the
+  // cursor can never end up outside the hit target (no hover flicker, click
+  // target preserved). Written to --mag-x/--mag-y and applied by CSS through
+  // the independent `translate` property, so it composes with - rather than
+  // fights - the button's hover transform.
+  // Never engages for touch/coarse pointers or reduced motion, and keyboard
+  // focus cannot leave the button offset because only pointermove sets it.
+  try {
+    var magFine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    var magCalm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var magnetic = Array.prototype.slice.call(document.querySelectorAll(".cta-magnetic"));
+    if (magFine && !magCalm && magnetic.length) {
+      var MAG_MAX = 8; // px of travel
+      magnetic.forEach(function (el) {
+        var magQueued = false;
+        var magX = 0;
+        var magY = 0;
+        var magApply = function () {
+          magQueued = false;
+          el.style.setProperty("--mag-x", magX.toFixed(2) + "px");
+          el.style.setProperty("--mag-y", magY.toFixed(2) + "px");
+        };
+        var magKick = function () {
+          if (!magQueued) { magQueued = true; window.requestAnimationFrame(magApply); }
+        };
+        var magReset = function () { magX = 0; magY = 0; magKick(); };
+        el.addEventListener("pointermove", function (e) {
+          if (e.pointerType && e.pointerType !== "mouse") return;
+          var r = el.getBoundingClientRect();
+          if (!r.width || !r.height) return;
+          magX = ((e.clientX - (r.left + r.width / 2)) / (r.width / 2)) * MAG_MAX;
+          magY = ((e.clientY - (r.top + r.height / 2)) / (r.height / 2)) * MAG_MAX;
+          magKick();
+        }, { passive: true });
+        el.addEventListener("pointerleave", magReset, { passive: true });
+        el.addEventListener("pointercancel", magReset, { passive: true });
+        el.addEventListener("blur", magReset);
+      });
+      // Scrolling moves the button out from under a stationary cursor; reset so
+      // it never rests offset after the page moves.
+      window.addEventListener("scroll", function () {
+        magnetic.forEach(function (el) {
+          el.style.setProperty("--mag-x", "0px");
+          el.style.setProperty("--mag-y", "0px");
+        });
+      }, { passive: true });
+    }
+  } catch (err) { /* magnetic is decorative — never break the page */ }
+
   // ---- Service filters ----
   var chips = Array.prototype.slice.call(document.querySelectorAll("[data-filter]"));
   var cards = Array.prototype.slice.call(document.querySelectorAll("#service-grid .card"));
@@ -357,14 +408,22 @@
       chip.classList.add("is-active");
       chip.setAttribute("aria-pressed", "true");
       var f = chip.getAttribute("data-filter");
+      // Stagger the re-entry by visible order so filtering reads as a
+      // deliberate transition rather than a single snap. --d is capped so a
+      // 21-card group never feels sluggish.
+      var visibleIndex = 0;
       cards.forEach(function (card) {
         var show = f === "all" || card.getAttribute("data-category") === f;
         card.style.display = show ? "" : "none";
         if (show) {
+          card.style.setProperty("--d", String(Math.min(visibleIndex, 6) * 45) + "ms");
           // Restart the subtle entrance so filtering feels alive (transform/opacity only).
           card.style.animation = "none";
           void card.offsetWidth;
           card.style.animation = "";
+          visibleIndex++;
+        } else {
+          card.style.removeProperty("--d");
         }
       });
       // Hide empty group headings when filtering (keeps counts accurate).

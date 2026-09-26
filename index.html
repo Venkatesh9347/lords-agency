@@ -90,7 +90,7 @@
         <a href="#faq">FAQ</a>
       </nav>
       <div class="header-actions">
-        <a class="btn btn-primary btn-sm header-cta" href="#contact">Start a Project</a>
+        <a class="btn btn-primary btn-sm header-cta" href="#contact"><span class="cta-label-full">Start a Project</span><span class="cta-label-short">Start</span></a>
         <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
           <span></span><span></span><span></span>
         </button>
@@ -118,33 +118,28 @@
             <li>Support after launch</li>
           </ul>
         </div>
-        <div class="hero-visual" aria-label="Illustrative software system diagram" role="img" data-depth-visual>
+        <div class="hero-visual" role="img" aria-label="Illustrative diagram of the LORDS AGENCY delivery method: a five-stage rail running from discover through design, build and automation to evolve, above the four capability groups the agency builds in." data-depth-visual>
           <div class="sys-window">
-            <div class="sys-bar" aria-hidden="true"><span></span><span></span><span></span><em>system / reference</em></div>
+            <div class="sys-bar" aria-hidden="true"><span></span><span></span><span></span><em>delivery / capability</em></div>
             <div class="sys-tree" aria-hidden="true">
-              <div class="sys-tier sys-tier--core">
-                <div class="sys-node">API</div>
-                <div class="sys-link"></div>
-                <div class="sys-node">AUTH</div>
-                <div class="sys-link"></div>
-                <div class="sys-node">DATABASE</div>
-              </div>
-              <div class="sys-branch">
-                <div class="sys-leaf">
-                  <i class="sys-v"></i>
-                  <div class="sys-node">USERS</div>
-                  <div class="sys-node">PAYMENTS</div>
-                </div>
-                <div class="sys-leaf">
-                  <i class="sys-v"></i>
-                  <div class="sys-node">EVENTS</div>
-                  <div class="sys-node">LOGS</div>
-                </div>
-              </div>
+              <ol class="sys-rail">
+                <li class="sys-stage"><i></i><span>Discover</span></li>
+                <li class="sys-stage"><i></i><span>Design</span></li>
+                <li class="sys-stage"><i></i><span>Build</span></li>
+                <li class="sys-stage"><i></i><span>Automate</span></li>
+                <li class="sys-stage"><i></i><span>Evolve</span></li>
+              </ol>
+              <div class="sys-bus"></div>
+              <ul class="sys-caps">
+                <li class="sys-cap">Build</li>
+                <li class="sys-cap">Automate</li>
+                <li class="sys-cap">Systems</li>
+                <li class="sys-cap">Evolve</li>
+              </ul>
               <div class="sys-status"><i></i>STATUS&nbsp;&nbsp;SYSTEM READY</div>
             </div>
           </div>
-          <p class="sys-caption">Illustrative architecture diagram — not a client system.</p>
+          <p class="sys-caption">Illustrative diagram of our delivery method — not a client system.</p>
         </div>
       </div>
     </section>
@@ -689,6 +684,40 @@
             <p>You own the codebase, documentation and data. Project handover can include source code, documentation, deployment information, credentials/access transfer where applicable, and agreed project data. Handover details are defined as part of the engagement.</p>
           </details>
         </div>
+      </div>
+    </section>
+
+    <!-- ============ CTA BAND ============ -->
+    <section class="cta-band" id="cta" aria-labelledby="cta-heading">
+      <div class="marquee">
+        <div class="marquee-track">
+          <ul class="marquee-row">
+            <li>Custom Software</li>
+            <li>AI &amp; Automation</li>
+            <li>Business Systems</li>
+            <li>API Integration</li>
+            <li>Cloud &amp; Deployment</li>
+            <li>Technical Takeover</li>
+            <li>MVP &amp; Consulting</li>
+            <li>Support &amp; Training</li>
+          </ul>
+          <ul class="marquee-row" aria-hidden="true">
+            <li>Custom Software</li>
+            <li>AI &amp; Automation</li>
+            <li>Business Systems</li>
+            <li>API Integration</li>
+            <li>Cloud &amp; Deployment</li>
+            <li>Technical Takeover</li>
+            <li>MVP &amp; Consulting</li>
+            <li>Support &amp; Training</li>
+          </ul>
+        </div>
+      </div>
+      <div class="container cta-band-inner">
+        <p class="eyebrow eyebrow-center">Next step</p>
+        <h2 id="cta-heading">Have a system in mind?</h2>
+        <p class="section-lede cta-lede">Send a brief. We&rsquo;ll tell you honestly whether we&rsquo;re the right fit &mdash; and what it would take.</p>
+        <a class="btn btn-primary btn-lg cta-magnetic" href="#contact">Start a Project</a>
       </div>
     </section>
 
