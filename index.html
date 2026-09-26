@@ -9,6 +9,10 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="canonical" href="https://lordsagency.alc.onl/" />
+  <!-- API base for the enquiry form. Empty = same origin. Overridden at
+    deploy time if the Laravel API lives on a different host, or at runtime
+    via window.LORDS_API_BASE_URL. No secrets here. -->
+  <meta name="api-base-url" content="" />
   <meta property="og:title" content="LORDS AGENCY — Turning ideas into real software." />
   <meta property="og:description" content="Custom software, AI and automation solutions designed around your business." />
   <meta property="og:type" content="website" />
@@ -826,12 +830,20 @@
             <p class="form-error" id="form-error" role="alert" hidden></p>
 
             <div class="form-actions">
-              <button class="btn btn-primary" type="submit">Send project enquiry</button>
+              <button class="btn btn-primary" type="submit" id="send-enquiry">Send project enquiry</button>
               <button class="btn btn-secondary" type="button" id="copy-brief">Copy brief</button>
+              <button class="btn btn-secondary" type="button" id="email-fallback-btn" hidden>Use email instead</button>
             </div>
             <div class="form-success" id="form-success" role="status" hidden>
-              <p><strong>Email draft prepared — not sent.</strong> Your email app should open with everything pre-filled — review it and press Send. If it didn't open, use Copy brief or Open email manually.</p>
-              <a class="btn btn-secondary" id="mailto-fallback" href="mailto:venkatesh99.info@gmail.com">Open email manually</a>
+              <div id="mailto-success" hidden>
+                <p><strong>Email draft prepared — not sent.</strong> Your email app should open with everything pre-filled — review it and press Send. If it didn't open, use Copy brief or Open email manually.</p>
+                <a class="btn btn-secondary" id="mailto-fallback" href="mailto:venkatesh99.info@gmail.com">Open email manually</a>
+              </div>
+              <div id="api-success" hidden>
+                <p><strong>Enquiry received.</strong></p>
+                <p id="api-success-message">Your project enquiry has been received.</p>
+                <p class="reference-line">Reference: <strong id="api-reference"></strong></p>
+              </div>
             </div>
           </form>
         </div>

@@ -367,6 +367,77 @@
     updateCount();
   }
 
+  // ---- API configuration (Phase 2A: mailto-first becomes API-first) ----
+  // Base URL resolution, highest priority first:
+  //   1. window.LORDS_API_BASE_URL (deploy-time runtime injection)
+  //   2. <meta name="api-base-url" content="..."> (deploy-time file config)
+  //   3. "" (same origin — frontend and API on one host)
+  // No secrets here: the base URL is public configuration, not a credential.
+  function apiBaseUrl() {
+    try {
+      if (typeof window.LORDS_API_BASE_URL === "string" && window.LORDS_API_BASE_URL.trim() !== "") {
+        return window.LORDS_API_BASE_URL.replace(/\/+$/, "");
+      }
+    } catch (err) { /* read-only probe — never break the page */ }
+    var meta = document.querySelector('meta[name="api-base-url"]');
+    var content = meta ? (meta.getAttribute("content") || "").trim() : "";
+    return content.replace(/\/+$/, "");
+  }
+  function apiEnquiriesUrl() {
+    return apiBaseUrl() + "/api/enquiries";
+  }
+
+  // Submission state: guards against duplicate POSTs (the public API has
+  // no idempotency key) across clicks, Enter key, and programmatic submits.
+  var sendBtn = document.getElementById("send-enquiry");
+  var emailFallbackBtn = document.getElementById("email-fallback-btn");
+  var mailtoSuccess = document.getElementById("mailto-success");
+  var apiSuccess = document.getElementById("api-success");
+  var apiSuccessMessage = document.getElementById("api-success-message");
+  var apiReference = document.getElementById("api-reference");
+  var isSubmitting = false;
+  var sendLabel = sendBtn ? sendBtn.textContent : "Send project enquiry";
+  var API_TIMEOUT_MS = 20000;
+
+  function setSubmitting(on) {
+    isSubmitting = on;
+    if (sendBtn) {
+      sendBtn.disabled = on;
+      sendBtn.textContent = on ? "Sending…" : sendLabel;
+    }
+    if (copyBtn) copyBtn.disabled = on;
+    if (form) {
+      if (on) { form.setAttribute("aria-busy", "true"); }
+      else { form.removeAttribute("aria-busy"); }
+    }
+  }
+  function hideEmailFallback() {
+    if (emailFallbackBtn) emailFallbackBtn.hidden = true;
+  }
+  function showEmailFallback() {
+    if (emailFallbackBtn) emailFallbackBtn.hidden = false;
+  }
+  function showMailtoSuccess() {
+    if (apiSuccess) apiSuccess.hidden = true;
+    if (mailtoSuccess) mailtoSuccess.hidden = false;
+    if (successBox) successBox.hidden = false;
+  }
+  function showApiSuccess(message, reference) {
+    if (mailtoSuccess) mailtoSuccess.hidden = true;
+    if (apiSuccessMessage) {
+      apiSuccessMessage.textContent = message || "Your project enquiry has been received.";
+    }
+    if (apiReference) {
+      apiReference.textContent = reference || "";
+      var refLine = apiReference.parentNode;
+      if (refLine && refLine.classList && refLine.classList.contains("reference-line")) {
+        refLine.hidden = !reference;
+      }
+    }
+    if (apiSuccess) apiSuccess.hidden = false;
+    if (successBox) successBox.hidden = false;
+  }
+
   // Conservative maximum length for the generated mailto: URI.
   // Reasoning: the brief is URL-encoded into the URI (non-ASCII input such as
   // emoji expands ~9x via encodeURIComponent), while mailto: handling varies
@@ -421,12 +492,37 @@
   function clearStatus() {
     if (errorBox) { errorBox.hidden = true; errorBox.textContent = ""; }
     if (successBox) successBox.hidden = true;
+    hideEmailFallback();
     clearInvalidState();
   }
 
   function fieldValue(name) {
     var el = form.querySelector('[name="' + name + '"]');
     return el ? String(el.value).trim() : "";
+  }
+
+  // Exact contract payload. Empty optionals are omitted (the API also
+  // treats "" as null via ConvertEmptyStringsToNull); the honeypot field
+  // is always sent with its exact name. Never sends status, reference,
+  // assignee, recipients, or audit identity — the server owns those.
+  function buildPayload() {
+    var payload = {
+      project_type: fieldValue("project_type"),
+      current_stage: fieldValue("current_stage"),
+      timeline: fieldValue("timeline"),
+      description: fieldValue("description"),
+      name: fieldValue("name"),
+      email: fieldValue("email"),
+      phone: fieldValue("phone"),
+      country: fieldValue("country")
+    };
+    ["budget", "company", "website"].forEach(function (name) {
+      var value = fieldValue(name);
+      if (value !== "") payload[name] = value;
+    });
+    var honey = form.querySelector('[name="company_website_confirm"]');
+    payload.company_website_confirm = honey ? String(honey.value) : "";
+    return payload;
   }
 
   function buildBrief() {
@@ -471,13 +567,138 @@
     return null;
   }
 
+  // Deliberate mailto fallback (Phase 1 behavior, kept intact).
+  // Only invoked when the user explicitly chooses email after an API
+  // failure — never automatically. Preserves the length guard, the
+  // "Email draft prepared — not sent." wording, and no truncation.
+  function submitViaMailto() {
+    var brief = buildBrief();
+    var subject = "Project enquiry — " + fieldValue("project_type") + " — " + fieldValue("name");
+    var href = "mailto:" + CONTACT_EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(brief);
+    // Oversized-URI guard: never navigate to a mailto: URI above the
+    // conservative limit — it may fail silently. The brief stays in the
+    // form (nothing is truncated or lost); the user can still use Copy
+    // brief or the manual email fallback below.
+    if (href.length > MAX_MAILTO_URI_LENGTH) {
+      if (mailtoFallback) mailtoFallback.href = "mailto:" + CONTACT_EMAIL;
+      showError("Your project brief is too long to open as an email draft on this device (" + href.length + " characters; the safe limit is " + MAX_MAILTO_URI_LENGTH + "). Please shorten the description, or use Copy brief and paste it into your own email to " + CONTACT_EMAIL + ".");
+      markInvalid("description");
+      return;
+    }
+    if (mailtoFallback) mailtoFallback.href = href;
+    window.location.href = href;
+    // NOTE: mailto: provides no delivery/open confirmation, so the message
+    // below deliberately says "draft prepared" — never "sent" or "submitted".
+    showMailtoSuccess();
+  }
+
+  function finishSubmitting() {
+    setSubmitting(false);
+  }
+
+  function onApiSuccess(data) {
+    finishSubmitting();
+    var message = (data && typeof data.message === "string" && data.message)
+      ? data.message
+      : "Your project enquiry has been received.";
+    var reference = (data && typeof data.reference_code === "string")
+      ? data.reference_code
+      : "";
+    showApiSuccess(message, reference);
+  }
+
+  function onApiValidationError(data) {
+    finishSubmitting();
+    var errors = (data && data.errors && typeof data.errors === "object") ? data.errors : {};
+    // Map the first backend field error (in form order) onto the
+    // existing invalid-state + focus behavior.
+    var names = Object.keys(FIELD_IDS);
+    for (var i = 0; i < names.length; i++) {
+      var fieldErrors = errors[names[i]];
+      if (fieldErrors && fieldErrors.length) {
+        showError(String(fieldErrors[0]));
+        markInvalid(names[i]);
+        return;
+      }
+    }
+    var fallback = (data && typeof data.message === "string" && data.message)
+      ? data.message
+      : "Please check the highlighted fields and try again.";
+    showError(fallback);
+  }
+
+  function onApiRateLimited(response) {
+    finishSubmitting();
+    var message = "Too many enquiries submitted. Please try again shortly.";
+    try {
+      var retryAfter = response && response.headers ? response.headers.get("Retry-After") : null;
+      var seconds = retryAfter !== null ? parseInt(String(retryAfter), 10) : NaN;
+      if (!isNaN(seconds) && seconds > 0 && seconds <= 3600) {
+        message += " You can try again in " + seconds + " second" + (seconds === 1 ? "" : "s") + ".";
+      }
+    } catch (err) { /* header probe — keep the default message */ }
+    showError(message);
+  }
+
+  function onApiNetworkError() {
+    finishSubmitting();
+    showError("Could not reach the enquiry service. Check your connection and try again — or continue by email.");
+    showEmailFallback();
+  }
+
+  function onApiUnexpected() {
+    finishSubmitting();
+    // Never expose server internals: generic message + deliberate fallback.
+    showError("Something went wrong while sending your enquiry. Please try again — or continue by email.");
+    showEmailFallback();
+  }
+
+  function submitViaApi() {
+    setSubmitting(true);
+    hideEmailFallback();
+    var controller = null;
+    var timer = null;
+    if (typeof AbortController !== "undefined") {
+      controller = new AbortController();
+      timer = setTimeout(function () { controller.abort(); }, API_TIMEOUT_MS);
+    }
+    fetch(apiEnquiriesUrl(), {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify(buildPayload()),
+      signal: controller ? controller.signal : undefined
+    }).then(function (response) {
+      if (timer) clearTimeout(timer);
+      if (response.status === 201) {
+        response.json().then(onApiSuccess, onApiUnexpected);
+        return;
+      }
+      if (response.status === 422) {
+        response.json().then(onApiValidationError, onApiUnexpected);
+        return;
+      }
+      if (response.status === 429) {
+        onApiRateLimited(response);
+        return;
+      }
+      onApiUnexpected();
+    }, function () {
+      if (timer) clearTimeout(timer);
+      onApiNetworkError();
+    });
+  }
+
   if (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
+      // Double-submit guard: the public API has no idempotency key, so a
+      // second submit while a request is in flight is dropped entirely.
+      if (isSubmitting) return;
       clearStatus();
+      hideEmailFallback();
       var result = validate();
       if (result === "spam") {
-        if (successBox) successBox.hidden = false;
+        showMailtoSuccess();
         return;
       }
       if (result) {
@@ -485,24 +706,7 @@
         markInvalid(result.field);
         return;
       }
-      var brief = buildBrief();
-      var subject = "Project enquiry — " + fieldValue("project_type") + " — " + fieldValue("name");
-      var href = "mailto:" + CONTACT_EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(brief);
-      // Oversized-URI guard: never navigate to a mailto: URI above the
-      // conservative limit — it may fail silently. The brief stays in the
-      // form (nothing is truncated or lost); the user can still use Copy
-      // brief or the manual email fallback below.
-      if (href.length > MAX_MAILTO_URI_LENGTH) {
-        if (mailtoFallback) mailtoFallback.href = "mailto:" + CONTACT_EMAIL;
-        showError("Your project brief is too long to open as an email draft on this device (" + href.length + " characters; the safe limit is " + MAX_MAILTO_URI_LENGTH + "). Please shorten the description, or use Copy brief and paste it into your own email to " + CONTACT_EMAIL + ".");
-        markInvalid("description");
-        return;
-      }
-      if (mailtoFallback) mailtoFallback.href = href;
-      window.location.href = href;
-      // NOTE: mailto: provides no delivery/open confirmation, so the message
-      // below deliberately says "draft prepared" — never "sent" or "submitted".
-      if (successBox) successBox.hidden = false;
+      submitViaApi();
     });
 
     // Clear a control's invalid state as soon as the user starts correcting it.
@@ -512,6 +716,28 @@
         t.removeAttribute("aria-invalid");
         t.removeAttribute("aria-describedby");
       }
+    });
+  }
+
+  // Deliberate email fallback: shown only after an API failure, invoked
+  // only by explicit user choice. Revalidates (the user may have edited
+  // the form since the failure) and never fires automatically.
+  if (emailFallbackBtn && form) {
+    emailFallbackBtn.addEventListener("click", function () {
+      if (isSubmitting) return;
+      clearStatus();
+      hideEmailFallback();
+      var result = validate();
+      if (result === "spam") {
+        showMailtoSuccess();
+        return;
+      }
+      if (result) {
+        showError(result.message);
+        markInvalid(result.field);
+        return;
+      }
+      submitViaMailto();
     });
   }
 

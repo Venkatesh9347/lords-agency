@@ -828,6 +828,12 @@ input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: 
 .form-success { margin-top: 1rem; background: var(--success-bg); border: 1px solid var(--success-border); border-radius: 10px; padding: 1rem; color: var(--text); }
 .form-success p { margin-top: 0; }
 .form-success strong { color: var(--success); }
+.reference-line { font-size: 0.95rem; color: var(--muted); }
+.reference-line strong { font-family: var(--mono); letter-spacing: 0.06em; color: var(--gold-hi); }
+/* Hidden must win over component display rules (e.g. .btn). */
+[hidden] { display: none !important; }
+/* Submitting state: text-only, no motion (reduced-motion safe). */
+.btn[disabled] { opacity: 0.65; cursor: progress; transform: none; }
 
 /* ============ Footer: minimal premium ============ */
 .footer { background: var(--bg-deep); color: var(--muted); padding: 3.4rem 0 1.5rem; border-top: 1px solid var(--gold); }
