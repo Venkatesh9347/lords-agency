@@ -9,9 +9,10 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="canonical" href="https://lordsagency.alc.onl/" />
-  <!-- API base for the enquiry form. Empty = same origin. Overridden at
-    deploy time if the Laravel API lives on a different host, or at runtime
-    via window.LORDS_API_BASE_URL. No secrets here. -->
+  <!-- API base for the enquiry form. Points at the deployed Cloudflare Worker
+    (lords-agency-enquiry), which owns validation, rate limiting and delivery to
+    the company Gmail via Formspree. Can still be overridden at runtime via
+    window.LORDS_API_BASE_URL. Public configuration, not a secret. -->
   <meta name="api-base-url" content="https://lords-agency-enquiry.venkatesh99-info.workers.dev" />
   <meta property="og:title" content="LORDS AGENCY — Turning ideas into real software." />
   <meta property="og:description" content="Custom software, AI and automation solutions designed around your business." />
