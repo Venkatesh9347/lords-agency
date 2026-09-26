@@ -12,7 +12,7 @@
   <!-- API base for the enquiry form. Empty = same origin. Overridden at
     deploy time if the Laravel API lives on a different host, or at runtime
     via window.LORDS_API_BASE_URL. No secrets here. -->
-  <meta name="api-base-url" content="" />
+  <meta name="api-base-url" content="https://lords-agency-enquiry.venkatesh99-info.workers.dev" />
   <meta property="og:title" content="LORDS AGENCY — Turning ideas into real software." />
   <meta property="og:description" content="Custom software, AI and automation solutions designed around your business." />
   <meta property="og:type" content="website" />
@@ -852,11 +852,11 @@
         <div class="faq">
           <details>
             <summary>How is my enquiry information used?</summary>
-            <p>Your brief is used only to review your enquiry and respond with next steps. We do not sell or share your details, and we send no newsletters. Contact us any time to ask for your information to be removed.</p>
+            <p>Your brief is used only to review your enquiry and respond with next steps. We do not sell or share your details, and we send no newsletters. The form is submitted to our own server endpoint, which forwards it to us for delivery by Formspree, a third-party email delivery provider that stores a copy of the submission for up to 30 days. Contact us any time to ask for your information to be removed.</p>
           </details>
           <details>
             <summary>Do you track visitors?</summary>
-            <p>No. This website loads no analytics, advertising or tracking scripts. It runs entirely as static files with no cookies of its own.</p>
+            <p>No. This website loads no analytics, advertising or tracking scripts. It runs as static files with no cookies of its own. The enquiry form sends your details only to our own enquiry endpoint.</p>
           </details>
           <details>
             <summary>What are the engagement terms?</summary>
