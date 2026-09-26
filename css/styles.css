@@ -239,15 +239,18 @@ body::before {
 .header-cta { box-shadow: 0 6px 20px rgba(201, 162, 39, 0.25); white-space: nowrap; }
 .header-cta:hover { box-shadow: 0 10px 28px rgba(201, 162, 39, 0.4); }
 
-.nav-toggle { display: none; }
-.js .nav-toggle {
+/* The toggle occupies its space from first paint, with or without JS, so the
+   header width never changes when the .js class lands (that was a residual
+   layout shift). It is hidden at >=960px, and <noscript> hides it on mobile
+   where there is no toggle handler to bind. */
+.nav-toggle {
   display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
   min-height: 44px; min-width: 44px;
   background: transparent; border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 8px; padding: 0.5rem; cursor: pointer;
   transition: border-color 0.2s ease, background 0.2s ease;
 }
-.js .nav-toggle:hover { border-color: rgba(255, 255, 255, 0.6); background: rgba(255, 255, 255, 0.05); }
+.nav-toggle:hover { border-color: rgba(255, 255, 255, 0.6); background: rgba(255, 255, 255, 0.05); }
 .nav-toggle span { display: block; width: 20px; height: 2px; background: #fff; transition: transform 0.22s ease, opacity 0.2s ease; }
 .nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 .nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
@@ -1164,7 +1167,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: 
 
 @media (min-width: 960px) {
   .site-nav { display: flex; align-items: center; }
-  .js .nav-toggle { display: none; }
+  .nav-toggle { display: none; }
   .hero-grid { grid-template-columns: 1.05fr 0.95fr; align-items: center; }
   .hero { padding: 6rem 0 5rem; }
   .value-grid { grid-template-columns: 0.9fr 1.1fr; align-items: start; }
@@ -1246,12 +1249,15 @@ input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: 
 
 /* Mobile nav: JS-gated so no-JS users still get links */
 @media (max-width: 959px) {
-  .site-nav { display: grid; gap: 0.2rem; padding: 0.6rem 0 0; }
+  /* The collapsed panel is the DEFAULT state, identical with or without JS.
+     Gating it behind .js meant the header jumped from a tall inline list to a
+     short collapsed panel the moment JS added the class, shifting the hero
+     (measured CLS 0.386 at 390px). A <noscript> block in the markup restores
+     the inline list when JS is unavailable, so no-JS keeps working and the
+     layout never depends on script timing. */
+  .header-inner { flex-wrap: nowrap; padding: 0; position: relative; }
   .site-nav a { padding: 0.7rem 0.25rem; font-size: 0.98rem; min-height: 44px; display: flex; align-items: center; }
-  .header-inner { flex-wrap: wrap; padding: 0.7rem 0; }
-  .site-nav { order: 3; flex-basis: 100%; }
 
-  .js .header-inner { flex-wrap: nowrap; padding: 0; }
   /* The closed panel keeps a box (visibility, not display) and is driven by
      TRANSITIONS rather than keyframes, deliberately:
        - visibility:hidden still removes it from the tab order and the a11y tree
@@ -1263,18 +1269,21 @@ input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: 
          therefore invisible. A transition is never load-bearing: if it does not
          run, the panel simply computes to its final, VISIBLE open state.
      Worst case is "no animation", never "invisible menu". */
-  .js .site-nav {
+  .site-nav {
     display: grid; gap: 0.2rem; padding: 0.6rem 0 0;
-    order: initial; flex-basis: auto;
     position: absolute; top: 100%; left: 0; right: 0;
     visibility: hidden; opacity: 0; pointer-events: none;
     transform: translateY(-8px);
-    transition: opacity 0.22s var(--ease-in-out), transform 0.22s var(--ease-in-out), visibility 0s linear 0.22s;
+    /* visibility is deliberately NOT transitioned: a delayed hide would leave
+       the links tabbable while invisible. It flips instantly on close (which
+       also removes them from the tab order) and instantly on open, where the
+       opacity/transform transition provides the motion. */
+    transition: opacity 0.22s var(--ease-in-out), transform 0.22s var(--ease-in-out);
   }
-  .js .site-nav.is-open {
+  .site-nav.is-open {
     visibility: visible; opacity: 1; pointer-events: auto;
     transform: none;
-    transition: opacity 0.22s var(--ease-in-out), transform 0.22s var(--ease-in-out), visibility 0s;
+    transition: opacity 0.22s var(--ease-in-out), transform 0.22s var(--ease-in-out);
     background: rgba(9, 11, 14, 0.98);
     -webkit-backdrop-filter: blur(14px);
     backdrop-filter: blur(14px);
@@ -1282,22 +1291,21 @@ input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: 
     border-bottom: 1px solid var(--line-soft); gap: 0.2rem;
     box-shadow: 0 24px 40px rgba(0, 0, 0, 0.5);
   }
-  .js .site-nav.is-open a { padding: 0.8rem 0.75rem; font-size: 1rem; min-height: 44px; display: flex; align-items: center; }
+  .site-nav.is-open a { padding: 0.8rem 0.75rem; font-size: 1rem; min-height: 44px; display: flex; align-items: center; }
   /* Staggered item entrance, again transition-based so it can never leave a
      link stuck invisible. Closed state supplies the "from" value. */
-  .js .site-nav a {
+  .site-nav a {
     opacity: 0; transform: translateY(-7px);
     transition: opacity 0.28s var(--ease-out-expo), transform 0.28s var(--ease-out-expo);
   }
-  .js .site-nav.is-open a { opacity: 1; transform: none; }
-  .js .site-nav.is-open a:nth-child(1) { transition-delay: 0.03s; }
-  .js .site-nav.is-open a:nth-child(2) { transition-delay: 0.07s; }
-  .js .site-nav.is-open a:nth-child(3) { transition-delay: 0.11s; }
-  .js .site-nav.is-open a:nth-child(4) { transition-delay: 0.15s; }
-  .js .site-nav.is-open a:nth-child(5) { transition-delay: 0.19s; }
-  .js .site-nav.is-open a:nth-child(6) { transition-delay: 0.23s; }
-  .js .site-nav.is-open a:nth-child(7) { transition-delay: 0.27s; }
-  .header-inner { position: relative; }
+  .site-nav.is-open a { opacity: 1; transform: none; }
+  .site-nav.is-open a:nth-child(1) { transition-delay: 0.03s; }
+  .site-nav.is-open a:nth-child(2) { transition-delay: 0.07s; }
+  .site-nav.is-open a:nth-child(3) { transition-delay: 0.11s; }
+  .site-nav.is-open a:nth-child(4) { transition-delay: 0.15s; }
+  .site-nav.is-open a:nth-child(5) { transition-delay: 0.19s; }
+  .site-nav.is-open a:nth-child(6) { transition-delay: 0.23s; }
+  .site-nav.is-open a:nth-child(7) { transition-delay: 0.27s; }
 }
 @keyframes menu-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
 

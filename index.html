@@ -5,9 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>LORDS AGENCY — Custom Software, AI & Automation</title>
   <meta name="description" content="LORDS AGENCY designs, develops and delivers custom software, AI and automation solutions that help businesses work smarter, automate operations and scale." />
-  <meta name="theme-color" content="#0a1628" />
+  <meta name="theme-color" content="#0b0d10" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="stylesheet" href="css/styles.css" />
+  <!-- Without JavaScript the mobile menu cannot be toggled, so the nav is
+       restored to a plain inline list. This is also why the collapsed panel is
+       the default (not JS-gated) in CSS: the header height is then identical
+       with and without JS, so no layout shift depends on script timing. -->
+  <noscript>
+    <style>
+      @media (max-width: 959px) {
+        .header-inner { flex-wrap: wrap; padding: 0.7rem 0; }
+        .nav-toggle { display: none; }
+        .site-nav {
+          position: static; visibility: visible; opacity: 1;
+          display: grid; order: 3; flex-basis: 100%; transform: none;
+        }
+        .site-nav a { opacity: 1; transform: none; }
+      }
+    </style>
+  </noscript>
   <link rel="canonical" href="https://lordsagency.alc.onl/" />
   <!-- API base for the enquiry form. Points at the deployed Cloudflare Worker
     (lords-agency-enquiry), which owns validation, rate limiting and delivery to
