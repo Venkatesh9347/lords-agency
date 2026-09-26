@@ -89,6 +89,12 @@ h4 { font-size: 1.02rem; font-weight: 700; }
 
 .container { width: min(var(--max), calc(100% - 2.5rem)); margin: 0 auto; }
 .narrow { max-width: var(--max-narrow); }
+
+/* Visually hidden, still announced (filter result announcements) */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0;
+}
 .light { color: var(--text); }
 .light-muted { color: var(--muted); }
 
@@ -186,7 +192,7 @@ body.has-pointer::after { opacity: 1; }
 .site-nav a.is-active::after { transform: scaleX(1); }
 
 .header-actions { display: flex; align-items: center; gap: 0.7rem; }
-.header-cta { box-shadow: 0 6px 20px rgba(201, 162, 39, 0.25); }
+.header-cta { box-shadow: 0 6px 20px rgba(201, 162, 39, 0.25); white-space: nowrap; }
 .header-cta:hover { box-shadow: 0 10px 28px rgba(201, 162, 39, 0.4); }
 
 .nav-toggle { display: none; }
@@ -221,6 +227,16 @@ body.has-pointer::after { opacity: 1; }
   background: var(--gold); color: #141414;
   box-shadow: 0 6px 20px rgba(201, 162, 39, 0.25);
 }
+/* Light sweep across the label on hover — transform-only, GPU friendly */
+.btn-primary::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(100deg, transparent 32%, rgba(255, 255, 255, 0.28) 50%, transparent 68%);
+  transform: translateX(-130%);
+  transition: transform 0.55s var(--ease);
+  pointer-events: none;
+}
+.btn-primary:hover::before, .btn-primary:focus-visible::before { transform: translateX(130%); }
 .btn-primary::after {
   content: "→"; font-weight: 900;
   transition: transform 0.2s ease;
@@ -247,7 +263,8 @@ body.has-pointer::after { opacity: 1; }
 .footer-contact a:hover { color: var(--gold-hi); text-decoration-color: var(--gold-hi); }
 
 /* ============ Sections ============ */
-.section { padding: 5rem 0; position: relative; }
+/* Fluid vertical rhythm: tighter on phones, generous on large displays */
+.section { padding: clamp(3.5rem, 6.5vw, 6.25rem) 0; position: relative; }
 .section-muted { background: var(--surface); border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); }
 .section-dark { background: linear-gradient(180deg, #0a0c0f, #0d1116); color: var(--text); }
 .eyebrow {
@@ -452,16 +469,28 @@ body.has-pointer::after { opacity: 1; }
   color: var(--gold-hi); margin: 0 0 0.4rem; padding-bottom: 0.6rem;
   border-bottom: 1px solid var(--line);
 }
-.cards { display: grid; gap: 0; grid-template-columns: 1fr; border-top: 1px solid var(--line); }
-/* Editorial row: number | title + description | arrow (works with flat card DOM) */
+/* Services: responsive card grid.
+   The frame is drawn per card (right + bottom hairlines) with the container
+   supplying top + left. Unlike a gap-over-coloured-background technique this
+   leaves no artefact in the trailing empty cell when a group does not fill a
+   whole row. */
+.cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+/* Card cell: number | title + description, with a reserved slot for the arrow */
 .card {
   position: relative;
-  display: grid; grid-template-columns: auto 1fr; gap: 0.15rem 1.1rem; align-items: start;
-  background: transparent;
+  display: grid; grid-template-columns: auto 1fr; gap: 0.2rem 1.1rem;
+  align-items: start; align-content: start;
+  background-color: var(--bg);
+  border-right: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
-  padding: 1.15rem 3rem 1.15rem 0.6rem;
-  transition: background 0.22s ease, transform 0.22s ease, padding 0.22s ease;
+  padding: 1.2rem 1.15rem 2.3rem;
   overflow: hidden;
+  transition: background-color 0.24s ease, border-color 0.24s ease;
 }
 .card::before {
   content: "";
@@ -473,10 +502,10 @@ body.has-pointer::after { opacity: 1; }
 }
 .card::after {
   content: "→";
-  position: absolute; right: 0.9rem; top: 1.15rem;
-  color: var(--gold-hi); font-weight: 900; font-size: 1.25rem; line-height: 1;
-  opacity: 0; transform: translateX(-10px);
-  transition: opacity 0.22s ease, transform 0.22s ease;
+  position: absolute; right: 1.15rem; bottom: 0.95rem;
+  color: var(--gold-hi); font-weight: 900; font-size: 1.2rem; line-height: 1;
+  opacity: 0; transform: translateX(-8px);
+  transition: opacity 0.22s ease, transform 0.22s var(--ease);
 }
 .card:hover, .card:focus-within { background: rgba(255, 255, 255, 0.025); }
 .card:hover::before, .card:focus-within::before { opacity: 1; transform: none; }
@@ -911,6 +940,22 @@ input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: 
 .js .value-card.reveal.is-visible:hover { transform: translateY(-2px); }
 .js .case.reveal.is-visible:hover .mock { transform: translateY(-2px); }
 
+/* Service card interaction.
+   Declared after the reveal block so it also wins for revealed cards, which
+   carry .reveal.is-visible and otherwise out-specify the plain :hover rules.
+   Deliberately limited to properties that respond reliably: the card itself
+   never moves (so hover cannot detach the pointer) and no pseudo-element or
+   descendant transition is depended upon. The original ::before sweep and
+   ::after arrow rules are left untouched above. */
+.card:hover, .card:focus-within,
+.js .card.reveal.is-visible:hover, .js .card.reveal.is-visible:focus-within {
+  background-color: var(--panel);
+  border-color: rgba(201, 162, 39, 0.45);
+  z-index: 1;
+}
+.card:hover h4, .card:focus-within h4,
+.js .card.reveal.is-visible:hover h4, .js .card.reveal.is-visible:focus-within h4 { color: #fff; }
+
 /* ============ Breakpoints ============ */
 @media (min-width: 430px) {
   .hero-ctas .btn { flex: 1 1 auto; }
@@ -923,8 +968,12 @@ input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: 
   .field-grid { grid-template-columns: repeat(2, 1fr); }
   .timeline { grid-template-columns: repeat(2, 1fr); }
   .value-cards { grid-template-columns: repeat(2, 1fr); }
-  .card { padding: 1.25rem 3.2rem 1.25rem 1rem; }
+  .cards { grid-template-columns: repeat(2, 1fr); }
   .card h4 { font-size: 1.12rem; }
+}
+@media (min-width: 760px) and (max-width: 1023px) {
+  /* Tablet: two columns, but keep the card comfortable rather than cramped. */
+  .card { padding: 1.1rem 1rem 2.15rem; }
 }
 
 @media (min-width: 960px) {
@@ -940,6 +989,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: 
   .about-grid { grid-template-columns: 0.9fr 1.1fr; }
   .contact-grid { grid-template-columns: 0.85fr 1.15fr; }
   .footer-grid { grid-template-columns: 1.25fr 0.7fr 0.95fr; }
+  .cards { grid-template-columns: repeat(3, 1fr); }
 
   /* Horizontal process connector */
   .process .timeline { position: relative; }
@@ -966,6 +1016,12 @@ input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: 
   .flow-grid { grid-template-columns: repeat(3, 1fr); }
   .hero-grid { gap: 3rem; }
   .why-item { grid-template-columns: 5rem 1fr; }
+}
+
+/* Small phones: keep the header CTA on one line and keep 44px touch targets */
+@media (max-width: 479px) {
+  .header-cta { padding: 0.55rem 0.8rem; font-size: 0.76rem; letter-spacing: 0.05em; gap: 0.35rem; }
+  .header-actions { gap: 0.5rem; }
 }
 
 /* Mobile nav: JS-gated so no-JS users still get links */
@@ -1009,5 +1065,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: 
   .js .work-track { transform: none; display: grid; }
   .js .work-track .case { display: grid; grid-template-columns: 1fr; }
   .js .work-track .work-grid { display: grid; }
+  .btn-primary::before { display: none; }
+  .card:hover, .card:focus-within,
+  .js .card.reveal.is-visible:hover, .js .card.reveal.is-visible:focus-within { transform: none; }
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }

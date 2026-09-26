@@ -17,14 +17,14 @@
   <meta property="og:description" content="Custom software, AI and automation solutions designed around your business." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://lordsagency.alc.onl/" />
-  <meta property="og:image" content="https://lordsagency.alc.onl/og-image.png" />
+  <meta property="og:image" content="https://lordsagency.alc.onl/og-image.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="LORDS AGENCY — Custom Software, AI and Automation" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="LORDS AGENCY — Turning ideas into real software." />
   <meta name="twitter:description" content="Custom software, AI and automation solutions designed around your business." />
-  <meta name="twitter:image" content="https://lordsagency.alc.onl/og-image.png" />
+  <meta name="twitter:image" content="https://lordsagency.alc.onl/og-image.jpg" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -191,6 +191,7 @@
           <button class="chip" data-filter="systems" type="button" aria-pressed="false">Business systems</button>
           <button class="chip" data-filter="evolve" type="button" aria-pressed="false">Evolve &amp; support</button>
         </div>
+        <p class="sr-only" id="service-filter-status" role="status" aria-live="polite"></p>
 
         <div class="svc-groups" id="service-grid">
           <section class="svc-group" aria-label="Build services">
@@ -640,7 +641,7 @@
           </details>
           <details>
             <summary>Do you offer a first-project discount?</summary>
-            <p>Eligible first-time clients may receive up to 85% off selected services. The applicable offer depends on the project scope, complexity and agreed engagement.</p>
+            <p>First-project pricing is agreed per engagement rather than published as a fixed discount. Applicable terms are set out in the proposal and confirmed in writing before work begins.</p>
           </details>
           <details>
             <summary>How long does a typical project take?</summary>
@@ -660,7 +661,7 @@
           </details>
           <details>
             <summary>What if we already have software?</summary>
-            <p>We can improve, maintain, integrate or take over existing applications. Eligible minor adjustments may be provided at no additional development charge when the requested work falls within the agreed scope.</p>
+            <p>We can improve, maintain, integrate or take over existing applications. Anything outside the agreed scope is discussed and agreed with you before it begins.</p>
           </details>
           <details>
             <summary>Can you integrate with tools we already use?</summary>
@@ -719,14 +720,7 @@
             <p class="fine-print">By submitting, you agree to be contacted about your enquiry. No newsletters, no sharing your data.</p>
           </div>
 
-          <!--
-            PIPELINE (internal, for future backend):
-            NEW -> REVIEWING -> QUALIFIED -> DISCOVERY -> PROPOSAL -> NEGOTIATION -> WON/LOST
-            v1 is static: the form validates client-side and composes an email draft
-            (data-pipeline-stage="NEW"). Wire `form.action` to Formspree/FormBackend later
-            without changing field names.
-          -->
-          <form id="project-form" class="project-form" novalidate data-pipeline-stage="NEW">
+          <form id="project-form" class="project-form" novalidate>
             <h3 class="form-title">Project enquiry</h3>
 
             <div class="field-grid">

@@ -204,19 +204,42 @@
       updateWorkTrack();
     });
     updateWorkTrack();
+    if (workPanels && workPanels.length) syncPanelInert(true);
   }
   // Active panel emphasis (works in both horizontal and stacked layouts).
+  // In the horizontal showcase the off-screen panels stay in the accessibility
+  // tree, so a keyboard user could tab into a panel they cannot see. Marking
+  // them `inert` removes them from tab order and from the a11y tree until they
+  // become the active panel. In the stacked/mobile layout nothing is inert.
   var workPanels = Array.prototype.slice.call(document.querySelectorAll(".work-panel"));
+  var supportsInert = typeof HTMLElement !== "undefined" && "inert" in HTMLElement.prototype;
+  var workInertState = null;
+  function syncPanelInert(force) {
+    if (!supportsInert || !workPanels || !workPanels.length) return;
+    var guarded = workEnabled();
+    // Only guard when the showcase has actually picked a panel. After an
+    // anchor jump into #work no panel sits in the activation band, and making
+    // every panel inert would make the visible content unreachable.
+    var hasActive = workPanels.some(function (panel) { return panel.classList.contains("is-active"); });
+    if (!force && guarded === workInertState) return;
+    workInertState = guarded;
+    workPanels.forEach(function (panel) {
+      if (guarded && hasActive && !panel.classList.contains("is-active")) { panel.setAttribute("inert", ""); }
+      else { panel.removeAttribute("inert"); }
+    });
+  }
   if (workPanels.length && "IntersectionObserver" in window) {
     var panelObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
           workPanels.forEach(function (p) { p.classList.remove("is-active"); });
           entry.target.classList.add("is-active");
+          syncPanelInert(true);
         }
       });
     }, { rootMargin: "-30% 0px -30% 0px", threshold: 0 });
     workPanels.forEach(function (p) { panelObserver.observe(p); });
+    syncPanelInert(true);
   }
 
   // ---- Subtle desktop-only pointer glow (CSS variables, no tracking) ----
@@ -324,6 +347,7 @@
   var chips = Array.prototype.slice.call(document.querySelectorAll("[data-filter]"));
   var cards = Array.prototype.slice.call(document.querySelectorAll("#service-grid .card"));
   var groups = Array.prototype.slice.call(document.querySelectorAll("#service-grid .svc-group"));
+  var filterStatus = document.getElementById("service-filter-status");
   chips.forEach(function (chip) {
     chip.addEventListener("click", function () {
       chips.forEach(function (c) {
@@ -350,6 +374,14 @@
         });
         group.style.display = visible.length ? "" : "none";
       });
+
+      // Announce the result for screen readers (the visual change is silent).
+      if (filterStatus) {
+        var shown = cards.filter(function (card) { return card.style.display !== "none"; }).length;
+        var label = (chip.textContent || "").replace(/\s+/g, " ").trim();
+        filterStatus.textContent = "Showing " + shown + " of " + cards.length + " services" +
+          (f === "all" ? "." : " in " + label + ".");
+      }
     });
   });
 
@@ -527,7 +559,7 @@
 
   function buildBrief() {
     var lines = [
-      "New project enquiry — LORDS AGENCY (pipeline: NEW)",
+      "New project enquiry — LORDS AGENCY",
       "",
       "Project type: " + fieldValue("project_type"),
       "Current stage: " + fieldValue("current_stage"),
