@@ -1394,7 +1394,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: 
   .about-card,
   .field-grid label,
   .panel,
-  .mock-window,
+  .mock,
   details {
     border-color: var(--line) !important;
   }
@@ -1479,7 +1479,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: 
   body::after,
   body::before,
   .sys-window,
-  .mock-window,
+  .mock,
   .work-scroll {
     display: none !important;
   }
