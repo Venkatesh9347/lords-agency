@@ -94,7 +94,7 @@
   // ---- Reveal on scroll (JS-gated so no-JS pages stay fully visible) ----
   // Stagger via --d custom property: subtle per-index delay within each grid.
   document.documentElement.classList.add("js");
-  var revealTargets = document.querySelectorAll(".card, .work-card, .steps li, .timeline li, .stack-group, .matrix-group, .about-card, .hero-card, .sys-window, .flow-card, .value-card, .case, .mock");
+  var revealTargets = document.querySelectorAll(".card, .work-card, .steps li, .timeline li, .stack-group, .matrix-group, .about-card, .hero-card, .sys-window, .flow-card, .value-card, .case, .mock, .svc-group-title");
   var staggerGroups = document.querySelectorAll(".cards, .flow-grid, .work-grid, .timeline, .matrix, .value-cards");
   staggerGroups.forEach(function (group) {
     // Direct reveal children get a subtle stagger index (capped at 6 steps).
@@ -282,13 +282,25 @@
     var depthGlow = document.querySelector(".hero-glow");
     var depthVisual = document.querySelector("[data-depth-visual]");
     var depthCta = document.querySelector("[data-depth-cta]");
-    if (hero && depthFine && !depthCalm && (depthBg || depthGlow || depthVisual || depthCta)) {
+    var itaGlow = document.querySelector(".ita-glow");
+    var itaCrows = document.querySelector(".ita-crows");
+    var itaGeo = document.querySelector(".ita-geo");
+    if (hero && depthFine && !depthCalm &&
+        (depthBg || depthGlow || depthVisual || depthCta ||
+         itaGlow || itaCrows || itaGeo)) {
       var tX = 0, tY = 0, cX = 0, cY = 0, depthRunning = false;
       var DEPTH = [
         { el: depthBg, fx: 2, fy: 2, mode: "bg" },
         { el: depthGlow, fx: 5, fy: 4, mode: "offset" },
         { el: depthVisual, fx: 7, fy: 6, mode: "move" },
-        { el: depthCta, fx: 2.5, fy: 2, mode: "move" }
+        { el: depthCta, fx: 2.5, fy: 2, mode: "move" },
+        // Atmosphere layer. Both use "offset" (the independent
+        // `translate` property) because each already owns `transform`
+        // through a CSS animation - writing transform here would cancel
+        // that animation outright.
+        { el: itaGeo, fx: 4, fy: 4, mode: "offset" },
+        { el: itaGlow, fx: 10, fy: 10, mode: "offset" },
+        { el: itaCrows, fx: 12, fy: 12, mode: "offset" }
       ];
       var depthTick = function () {
         cX += (tX - cX) * 0.08;
@@ -342,6 +354,47 @@
       }, { passive: true });
     }
   } catch (err) { /* depth is decorative — never break the page */ }
+
+  // ---- Atmosphere layer: scroll fade + off-screen pause ----
+  // IntersectionObserver owns the run/pause gate; a rAF-coalesced scroll
+  // handler supplies the smooth opacity factor. The page scrolls exactly as
+  // before: nothing is pinned, captured, eased or scroll-jacked. The hero is
+  // only faded, and only while it is leaving the viewport. --ita-fade is a
+  // custom property, so it composes with the per-breakpoint --ita-base cap
+  // in CSS instead of overwriting it.
+  try {
+    var itaHero = document.querySelector(".hero");
+    var itaLayer = document.querySelector(".hero-ita");
+    if (itaHero && itaLayer && "IntersectionObserver" in window) {
+      var itaOnScreen = true;
+      var itaQueued = false;
+      var itaPaint = function () {
+        itaQueued = false;
+        var r = itaHero.getBoundingClientRect();
+        // 0 while the hero still fills the viewport; 1 once it has travelled
+        // roughly two thirds of its own height past the top.
+        var span = Math.max(1, r.height * 0.62);
+        var p = Math.min(1, Math.max(0, -r.top / span));
+        var gone = r.bottom <= 0 || r.top >= window.innerHeight;
+        if (!itaOnScreen || gone) {
+          itaLayer.classList.add("is-offscreen");
+        } else {
+          itaLayer.classList.remove("is-offscreen");
+        }
+        itaLayer.style.setProperty("--ita-fade", (1 - p * 0.7).toFixed(3));
+      };
+      var itaKick = function () {
+        if (!itaQueued) { itaQueued = true; window.requestAnimationFrame(itaPaint); }
+      };
+      new IntersectionObserver(function (entries) {
+        itaOnScreen = entries[0].isIntersecting;
+        itaKick();
+      }, { threshold: 0 }).observe(itaHero);
+      window.addEventListener("scroll", itaKick, { passive: true });
+      window.addEventListener("resize", itaKick, { passive: true });
+      itaPaint();
+    }
+  } catch (err) { /* atmosphere fade is decorative — never break the page */ }
 
   // ---- Magnetic CTA (fine pointer only) ----
   // The offset is ATTRACTIVE: it is proportional to the signed distance from
