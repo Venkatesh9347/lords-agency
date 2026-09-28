@@ -1,0 +1,231 @@
+/* ============================================================
+   LORDS AGENCY - cinematic eye-evolution intro overlay
+
+   A single fixed, full-viewport layer that plays once on load and then
+   ceases to exist. It sits ON TOP of the real page; the real page is never
+   replaced, re-parented or re-rendered.
+
+   Everything here is scoped to #cinematic-intro. No existing selector in
+   styles.css is touched, and no existing custom property is redefined.
+
+   Load order: this file is linked AFTER styles.css, so the tokens below
+   read the real production values rather than duplicating them.
+   ============================================================ */
+
+#cinematic-intro {
+  /* z-index above every existing layer in styles.css (max there is 300).
+     9999 is chosen to be unambiguous without reaching the 32-bit ceiling. */
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  overflow: hidden;
+  /* Opaque from the very first paint, before any script runs. The overlay is
+     in the served HTML, so the hero is never visible first and then covered -
+     there is no flash of the site before the intro. */
+  background: var(--bg-deep, #07090c);
+  opacity: 1;
+  visibility: visible;
+
+  /* Painting only. The intro deliberately has NO control of any kind, so it
+     never needs to receive a click. */
+  pointer-events: none;
+
+  /* Promote to its own compositor layer for the duration. Released again in
+     the hand-off so the layer does not linger in GPU memory. */
+  transform: translateZ(0);
+  will-change: opacity;
+  /* layout + paint only. Deliberately NOT `size`: the element is sized by its
+     insets, and size containment would be redundant at best. */
+  contain: layout paint;
+}
+
+/* ---------- the canvas: the entire cinematic sequence ---------- */
+#cinematic-intro__canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #000;
+}
+
+/* ---------- film grain ---------- */
+/* Inline data: SVG turbulence. Decorative, 5% opacity, blend-mode only.
+   It costs no request - the data URI is part of this stylesheet. */
+#cinematic-intro__grain {
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+/* ---------- cinematic brand lockup ----------
+   The payoff, and the last thing seen before the hand-off. It clears faster
+   than the overlay so the real hero is legible underneath rather than
+   cross-dissolving with it. Type uses the production --font/--mono stack and
+   the production gold; it does not introduce a typeface. */
+#cinematic-intro__brand {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(92vw, 720px);
+  text-align: center;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.5s ease,
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+#cinematic-intro__brand.is-in {
+  opacity: 1;
+  transform: translate(-50%, -50%) translateY(0);
+}
+
+#cinematic-intro__brand-rule {
+  display: block;
+  width: 54px;
+  height: 2px;
+  margin: 0 auto 1.35rem;
+  background: linear-gradient(90deg, var(--gold, #c9a227), var(--gold-hi, #e3c455));
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+}
+#cinematic-intro__brand.is-in #cinematic-intro__brand-rule {
+  transform: scaleX(1);
+}
+
+#cinematic-intro__brand-name {
+  margin: 0;
+  font-family: var(--font, system-ui, sans-serif);
+  font-size: clamp(1.3rem, 4vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  color: var(--text, #f3efe6);
+  text-shadow: 0 0 34px rgba(200, 16, 46, 0.32);
+}
+#cinematic-intro__brand-tag {
+  margin: 0.85rem 0 0;
+  font-family: var(--mono, monospace);
+  font-size: clamp(0.6rem, 1.4vw, 0.78rem);
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-indent: 0.24em;
+  text-transform: uppercase;
+  color: var(--gold-hi, #e3c455);
+}
+
+/* ============================================================
+   THE HAND-OFF
+
+   Three real transitions, so the crossfade into the site is genuine rather
+   than simulated:
+
+     overlay   opacity 0.9s ease
+     lockup    opacity 0.35s ease      (clears first, so the hero reads)
+     page      opacity 0.9s ease 0.35s (staggered in behind the overlay)
+
+   The lockup rule and the site fade-in are NOT declared here. The page fade
+   is driven by .is-intro-done on <body> (below); the lockup rule targets the
+   same class so both live together and cannot drift apart.
+   ============================================================ */
+
+#cinematic-intro.is-done {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  /* visibility flips only once opacity has finished, so the overlay can never
+     be invisible-but-still-present, nor pop out before it has faded. */
+  transition:
+    opacity 0.9s ease,
+    visibility 0s linear 0.9s;
+  will-change: auto;
+  transform: none;
+}
+
+body.is-intro-done #cinematic-intro__brand {
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+/* The page underneath sits at opacity 1 in the markup and is simply covered by
+   the overlay; only at the hand-off does its fade become what the viewer reads
+   as "the website arriving".
+
+   This targets the page's real top-level children with no attribute added to
+   any of them, and the overlay is excluded by :not(). It is the exact same set
+   the script marks inert, so visual suppression and interactivity suppression
+   can never drift apart.
+
+   The class is added by script. If the script never runs - no JS, or an error
+   before this point - the selector never matches and the page is simply
+   visible, which is the correct failure mode. */
+@media (prefers-reduced-motion: no-preference) {
+  body.is-intro-pending > *:not(#cinematic-intro) {
+    opacity: 0;
+    transition: opacity 0.9s ease 0.35s;
+  }
+}
+
+/* ============================================================
+   Reduced motion
+
+   No evolution, no lock, no pulse, no push, no crows, no particles. The
+   overlay is dismissed almost immediately so the site is simply there, in one
+   short fade and well inside the ~300ms budget.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  #cinematic-intro__grain,
+  #cinematic-intro__canvas {
+    display: none;
+  }
+  #cinematic-intro__brand {
+    display: none;
+  }
+  #cinematic-intro.is-done {
+    transition: opacity 0.25s linear, visibility 0s linear 0.25s;
+  }
+  /* The page is never suppressed in reduced motion, so the site is simply
+     there the moment the 0.25s overlay fade is done. */
+  body.is-intro-pending > *:not(#cinematic-intro) {
+    opacity: 1;
+    transition: none;
+  }
+}
+
+/* ============================================================
+   Forced colors / Windows High Contrast
+
+   The overlay is decorative, so in forced-colors mode it is removed outright
+   and the site is shown at once. Painting crimson and gold that the user has
+   explicitly overridden would be the wrong outcome.
+   ============================================================ */
+@media (forced-colors: active) {
+  #cinematic-intro {
+    display: none;
+  }
+  body.is-intro-pending > *:not(#cinematic-intro) {
+    opacity: 1;
+    transition: none;
+  }
+}
+
+/* ============================================================
+   Print
+
+   A print job should never carry a 9-second animation overlay into the PDF.
+   ============================================================ */
+@media print {
+  #cinematic-intro {
+    display: none !important;
+  }
+  body.is-intro-pending > *:not(#cinematic-intro) {
+    opacity: 1 !important;
+    transition: none !important;
+  }
+}

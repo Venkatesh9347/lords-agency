@@ -8,6 +8,7 @@
   <meta name="theme-color" content="#0b0d10" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/cinematic-intro.css" />
   <!-- Without JavaScript the mobile menu cannot be toggled, so the nav is
        restored to a plain inline list. This is also why the collapsed panel is
        the default (not JS-gated) in CSS: the header height is then identical
@@ -88,6 +89,31 @@
   </script>
 </head>
 <body id="top">
+  <!--
+    Cinematic eye-evolution intro. A fixed full-viewport overlay that plays once
+    on load and then removes itself; the real page beneath is never replaced.
+
+    Deliberately in the served HTML rather than injected by script, so it is
+    opaque from the very first paint and the hero is never visible before the
+    intro. The whole overlay is aria-hidden (purely decorative) and contains no
+    control of any kind: there is no skip button, and the sequence always runs
+    to completion. Under prefers-reduced-motion, forced-colors and print, CSS
+    removes it without running any script at all.
+
+    The canvas is a live Canvas 2D drawing, not a frame ladder or video: there
+    is no media asset to download, so the intro costs no extra request and no
+    decode, and the composition is resolution-independent.
+  -->
+  <div id="cinematic-intro" aria-hidden="true">
+    <canvas id="cinematic-intro__canvas"></canvas>
+    <div id="cinematic-intro__grain"></div>
+    <div id="cinematic-intro__brand">
+      <span id="cinematic-intro__brand-rule"></span>
+      <p id="cinematic-intro__brand-name">LORDS AGENCY</p>
+      <p id="cinematic-intro__brand-tag">Turning ideas into real software.</p>
+    </div>
+  </div>
+
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
 
@@ -955,6 +981,7 @@
     </div>
   </footer>
 
+  <script src="js/cinematic-intro.js" defer></script>
   <script src="js/main.js" defer></script>
 </body>
 </html>
