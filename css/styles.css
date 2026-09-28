@@ -52,6 +52,24 @@
      places and is deliberately left untouched; these are opt-in for new work. */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  /* Cinematic entrance curve: fast departure, long settle. Used for the
+     page/section entrance layer so entrances read as one deliberate move
+     rather than a queue of unrelated fades. */
+  --ease-cine: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* ---- Motion hierarchy (Phase 5) --------------------------------
+     1. page entrance   --dur-entrance
+     2. section entrance--dur-reveal
+     3. content reveal  --dur-reveal (with --d stagger)
+     4. hover           --dur-hover
+     5. ambient         --dur-ambient
+     Every value animates transform / opacity / clip-path only, so nothing
+     here triggers layout. */
+  --dur-micro: 0.14s;    /* colour nudges, underline draws */
+  --dur-hover: 0.24s;    /* standard hover response */
+  --dur-reveal: 0.7s;    /* content + section reveals */
+  --dur-entrance: 1.05s; /* hero / nav first paint */
+  --dur-ambient: 18s;    /* slow background drift */
 
   /* ---- Motion rhythm (Phase 4B) ----
      A small set of durations so hover, state and reveal timing stay
@@ -203,6 +221,16 @@ body::before {
   min-height: var(--header-h);
   transition: min-height 0.25s ease;
 }
+/* Page-entrance layer: the header assembles once on first paint with a short
+   stagger. Opacity/transform only, and the elements are already in their final
+   layout position, so this cannot introduce a layout shift.
+   The nav links are deliberately excluded here and animated in the >=960px
+   block instead: below that width the panel is a collapsed overlay whose own
+   open/close transition already drives opacity and transform on the same
+   links, and a fill-mode animation would fight it. */
+.js .brand { animation: nav-in var(--dur-entrance) var(--ease-cine) 0.05s both; }
+.js .header-actions { animation: nav-in var(--dur-entrance) var(--ease-cine) 0.34s both; }
+@keyframes nav-in { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
 .site-header.scrolled .header-inner { min-height: var(--header-h-scrolled); }
 .brand { display: flex; align-items: center; gap: 0.65rem; text-decoration: none; margin-right: auto; }
 .brand-mark {
@@ -337,7 +365,7 @@ body::before {
   border-bottom: 1px solid var(--line-soft);
 }
 .hero-grid-bg {
-  position: absolute; inset: 0; z-index: -2;
+  position: absolute; inset: 0; z-index: -3;
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
@@ -353,7 +381,7 @@ body::before {
   to { transform: translate3d(-12px, 10px, 0); }
 }
 .hero-glow {
-  position: absolute; z-index: -1;
+  position: absolute; z-index: -2;
   width: 560px; height: 560px;
   right: -140px; top: -160px;
   background: radial-gradient(circle, rgba(201, 162, 39, 0.14), transparent 68%);
@@ -364,6 +392,300 @@ body::before {
 @keyframes hero-glow {
   0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.85; }
   50% { transform: translate3d(-28px, 22px, 0) scale(1.07); opacity: 1; }
+}
+
+/* ============================================================
+   Hero atmosphere layer (Itachi-inspired, purely decorative)
+   ============================================================
+   Sits at z-index -1: above the base background (-3/-2) and below every
+   piece of hero content, which is either static (painted in the normal flow
+   layer, above all negatives) or transformed (also above). It therefore
+   cannot cover the headline, the CTAs or the diagram.
+
+   Everything here is transform / opacity / clip-path / filter only. No
+   top/left/width/height/margin/padding is ever animated, so the layer
+   contributes zero layout and zero layout shift.
+
+   Motion hierarchy for this layer is level 5 (ambient) plus a one-shot
+   level 1 entrance for the figure. Nothing loops fast, nothing flashes:
+   the slowest cycle is 26s and peak alphas stay under 0.5.
+   ============================================================ */
+.hero-ita {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  /* Scoped palette. The global gold system is untouched: these crimson
+     values exist only inside the layer so the accent can never leak. */
+  --ita-red: #c8203c;
+  --ita-red-hot: #ff5a6e;
+  --ita-red-deep: #6e0e20;
+  /* Overall strength, as a product, so the per-breakpoint intensity cap
+     and the scroll fade compose instead of overwriting each other:
+     JS owns --ita-fade (0.3 -> 1), the breakpoints own --ita-base. */
+  --ita-fade: 1;
+  --ita-base: 1;
+  opacity: calc(var(--ita-fade) * var(--ita-base));
+  transition: opacity 0.2s linear;
+}
+/* Pause every sub-layer in one class when the hero is fully off-screen, so
+   nothing keeps compositing for a region the user cannot see. Explicit list
+   rather than a descendant wildcard, to keep the selector cheap. */
+.hero-ita.is-offscreen .ita-glow,
+.hero-ita.is-offscreen .ita-geo,
+.hero-ita.is-offscreen .ita-geo-ring--in,
+.hero-ita.is-offscreen .ita-geo-core,
+.hero-ita.is-offscreen .ita-crow,
+.hero-ita.is-offscreen .ita-embers > span {
+  animation-play-state: paused;
+}
+
+/* ---- 1. Atmospheric crimson glow ------------------------------
+   Two offset radial washes, not one: a hot core sitting behind the
+   figure and a wider, weaker bloom. Peak opacity 0.9 against a 0.20
+   alpha gradient keeps the effective contribution around 0.18, which
+   reads as air rather than as a light source. */
+.ita-glow {
+  position: absolute;
+  right: -8%;
+  top: 50%;
+  width: min(760px, 72vw);
+  aspect-ratio: 1;
+  transform: translate3d(0, -50%, 0);
+  background:
+    radial-gradient(circle at 50% 46%,
+      rgba(255, 90, 110, 0.16) 0%,
+      rgba(200, 32, 60, 0.11) 30%,
+      rgba(110, 14, 32, 0.05) 54%,
+      transparent 72%);
+  animation: ita-breathe 12s var(--ease-in-out) infinite;
+  will-change: transform, opacity;
+}
+@keyframes ita-breathe {
+  0%, 100% { transform: translate3d(0, -50%, 0) scale(0.94); opacity: 0.6; }
+  50%      { transform: translate3d(0, -50%, 0) scale(1.07); opacity: 0.9; }
+}
+
+/* ---- 2. Abstract circular geometry ---------------------------
+   Deliberately NOT the Sharingan: no tomoe, no pupil, no canonical
+   mark layout. This is concentric rings, three evenly spaced teardrops
+   and a soft core - a circular motif that shares the mood without
+   reproducing a specific design. */
+.ita-geo {
+  position: absolute;
+  right: 3%;
+  top: 50%;
+  width: min(470px, 47vw);
+  aspect-ratio: 1;
+  transform: translate3d(0, -50%, 0);
+  opacity: 0.5;
+  animation: ita-geo 30s linear infinite;
+  will-change: transform, opacity;
+}
+@keyframes ita-geo {
+  0%   { transform: translate3d(0, -50%, 0) rotate(0deg) scale(0.96); opacity: 0.34; }
+  50%  { transform: translate3d(0, -50%, 0) rotate(180deg) scale(1.05); opacity: 0.6; }
+  100% { transform: translate3d(0, -50%, 0) rotate(360deg) scale(0.96); opacity: 0.34; }
+}
+.ita-geo-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(200, 32, 60, 0.32);
+  box-shadow: inset 0 0 36px rgba(200, 32, 60, 0.09);
+}
+.ita-geo-ring--in {
+  inset: 18%;
+  border-color: rgba(200, 32, 60, 0.2);
+  /* Counter-rotates against the parent, which reads as depth rather
+     than as a single flat spinning disc. */
+  animation: ita-geo-counter 21s linear infinite;
+}
+@keyframes ita-geo-counter { to { transform: rotate(-360deg); } }
+.ita-geo-mark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 15%;
+  aspect-ratio: 1;
+  margin: -7.5% 0 0 -7.5%;
+  border-radius: 50% 10% 50% 10%;
+  border: 1px solid rgba(226, 58, 78, 0.42);
+  background: radial-gradient(circle at 34% 34%, rgba(226, 58, 78, 0.16), transparent 70%);
+}
+/* Rotate FIRST, then translate: the translate then happens in the rotated
+   frame, which distributes the three marks 120 degrees apart around the ring.
+   (translate-then-rotate would spin each mark in place and stack all three at
+   the top.) The mark's own tilt follows the rotation, giving a pinwheel. */
+.ita-geo-mark:nth-child(3) { transform: rotate(0deg) translateY(-215%); }
+.ita-geo-mark:nth-child(4) { transform: rotate(120deg) translateY(-215%); }
+.ita-geo-mark:nth-child(5) { transform: rotate(240deg) translateY(-215%); }
+.ita-geo-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 27%;
+  aspect-ratio: 1;
+  margin: -13.5% 0 0 -13.5%;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(255, 90, 110, 0.42) 0%,
+    rgba(200, 32, 60, 0.18) 36%,
+    transparent 70%);
+  animation: ita-core 7s var(--ease-in-out) infinite;
+  will-change: transform, opacity;
+}
+@keyframes ita-core {
+  0%, 100% { transform: scale(0.9); opacity: 0.45; }
+  50%      { transform: scale(1.12); opacity: 0.9; }
+}
+
+/* The generated character figure was removed from this build, as was the
+   CSS-eye opening intro that briefly followed it. No character art is loaded
+   or referenced from the hero: the layer below is abstract geometry, glow, crow
+   silhouettes and embers, drawn entirely in CSS. The generated character image
+   was deleted from the tree rather than left on disk, so it is not shipped and
+   cannot be fetched. The cinematic opening that replaced the CSS intro is the
+   separate fixed overlay in css/cinematic-intro.css, driven by
+   js/cinematic-intro.js, and is unrelated to this hero decoration. */
+
+/* ---- 4. Crows ------------------------------------------------
+   Eight silhouettes in three depth bands. The shape is an inline data
+   URI (an original, generic bird form) rather than an external file:
+   that keeps the whole layer at zero extra requests and ~400 bytes of
+   CSS, and avoids the same missing-asset problem as the figure.
+   Negative delays start every crow mid-flight, so the sky is already
+   populated on first paint instead of filling in over a minute. */
+.ita-crows {
+  position: absolute;
+  inset: 0;
+  /* Soft horizontal ends so no crow ever pops into existence. */
+  mask-image: linear-gradient(90deg, transparent 0%, #000 22%, #000 78%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 22%, #000 78%, transparent 100%);
+}
+.ita-crow {
+  position: absolute;
+  left: 0;
+  top: var(--y, 20%);
+  display: block;
+  width: var(--w, 46px);
+  aspect-ratio: 120 / 44;
+  /* Silhouette is an inline data URI - an original, generic swept-wing bird
+     form. Inline rather than a file: it keeps the whole layer at zero extra
+     requests, avoids the same missing-asset problem as the figure, and costs
+     about 400 bytes of CSS once for all eight birds. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 44'%3E%3Cpath fill='%23000' d='M60 5c-8 13-20 20-36 22 16 2 26 6 34 15l2 2 2-2c8-9 18-13 34-15C80 25 68 18 60 5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  opacity: var(--o, 0.34);
+  animation: ita-fly var(--dur, 60s) linear var(--delay, 0s) infinite;
+  will-change: transform, opacity;
+}
+@keyframes ita-fly {
+  0%   { transform: translate3d(-14vw, 0, 0) scale(var(--s, 1)) rotate(-3deg); opacity: 0; }
+  10%  { opacity: var(--o, 0.34); }
+  50%  { transform: translate3d(46vw, -16px, 0) scale(var(--s, 1)) rotate(2deg); }
+  90%  { opacity: var(--o, 0.34); }
+  100% { transform: translate3d(112vw, 8px, 0) scale(var(--s, 1)) rotate(-2deg); opacity: 0; }
+}
+/* Depth band 1 - far: slowest, smallest, faintest. */
+.ita-crow:nth-child(1) { --dur: 96s;  --delay: -18s; --y: 15%; --w: 30px; --o: 0.3; }
+.ita-crow:nth-child(2) { --dur: 108s; --delay: -62s; --y: 33%; --w: 26px; --o: 0.24; }
+.ita-crow:nth-child(3) { --dur: 84s;  --delay: -40s; --y: 61%; --w: 34px; --o: 0.28; }
+/* Depth band 2 - middle. */
+.ita-crow:nth-child(4) { --dur: 62s;  --delay: -10s; --y: 23%; --w: 48px; --o: 0.34; }
+.ita-crow:nth-child(5) { --dur: 70s;  --delay: -48s; --y: 47%; --w: 44px; --o: 0.3; }
+.ita-crow:nth-child(6) { --dur: 54s;  --delay: -26s; --y: 71%; --w: 52px; --o: 0.26; }
+/* Depth band 3 - near: fastest and largest, but the *faintest*, so a
+   close pass never becomes a large hard black shape over the copy. */
+.ita-crow:nth-child(7) { --dur: 38s;  --delay: -6s;  --y: 11%; --w: 76px; --o: 0.2; }
+.ita-crow:nth-child(8) { --dur: 44s;  --delay: -30s; --y: 83%; --w: 84px; --o: 0.16; }
+
+/* ---- 5. Embers ----------------------------------------------
+   Twelve drifting crimson motes. All are seeded into the right half
+   of the hero (50%-90%) so the left column - where the copy lives -
+   stays visually quiet. Pure keyframes: no particle engine, no
+   JavaScript, no canvas. */
+.ita-embers { position: absolute; inset: 0; }
+.ita-embers > span {
+  position: absolute;
+  left: var(--x, 60%);
+  bottom: -3%;
+  display: block;
+  width: var(--s, 3px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(255, 120, 140, 0.9) 0%,
+    rgba(200, 32, 60, 0.5) 46%,
+    transparent 72%);
+  opacity: 0;
+  animation: ita-ember var(--dur, 16s) ease-in var(--delay, 0s) infinite;
+  will-change: transform, opacity;
+}
+@keyframes ita-ember {
+  0%   { transform: translate3d(0, 0, 0) scale(0.55); opacity: 0; }
+  14%  { opacity: var(--o, 0.45); }
+  50%  { transform: translate3d(var(--dx, 8px), -44vh, 0) scale(1); }
+  86%  { opacity: var(--o, 0.45); }
+  100% { transform: translate3d(calc(var(--dx, 8px) * 1.7), -88vh, 0) scale(0.7); opacity: 0; }
+}
+.ita-embers > span:nth-child(1)  { --x: 50%; --dur: 15s; --delay: -3s;  --s: 3px; --o: 0.55; --dx: 10px; }
+.ita-embers > span:nth-child(2)  { --x: 63%; --dur: 19s; --delay: -11s; --s: 2px; --o: 0.45; --dx: -8px; }
+.ita-embers > span:nth-child(3)  { --x: 71%; --dur: 13s; --delay: -6s;  --s: 4px; --o: 0.5;  --dx: 14px; }
+.ita-embers > span:nth-child(4)  { --x: 56%; --dur: 22s; --delay: -17s; --s: 2px; --o: 0.38; --dx: -12px; }
+.ita-embers > span:nth-child(5)  { --x: 78%; --dur: 16s; --delay: -2s;  --s: 3px; --o: 0.48; --dx: 6px; }
+.ita-embers > span:nth-child(6)  { --x: 58%; --dur: 25s; --delay: -20s; --s: 2px; --o: 0.4;  --dx: -6px; }
+.ita-embers > span:nth-child(7)  { --x: 84%; --dur: 14s; --delay: -9s;  --s: 3px; --o: 0.52; --dx: 12px; }
+.ita-embers > span:nth-child(8)  { --x: 67%; --dur: 20s; --delay: -14s; --s: 2px; --o: 0.42; --dx: -10px; }
+.ita-embers > span:nth-child(9)  { --x: 90%; --dur: 18s; --delay: -5s;  --s: 4px; --o: 0.46; --dx: 8px; }
+.ita-embers > span:nth-child(10) { --x: 55%; --dur: 17s; --delay: -12s; --s: 3px; --o: 0.5;  --dx: -14px; }
+.ita-embers > span:nth-child(11) { --x: 75%; --dur: 23s; --delay: -19s; --s: 2px; --o: 0.36; --dx: 16px; }
+.ita-embers > span:nth-child(12) { --x: 61%; --dur: 15s; --delay: -8s;  --s: 3px; --o: 0.47; --dx: -4px; }
+
+/* ---- 6. Responsive intensity --------------------------------
+   Not "the desktop animation, smaller": element counts and sizes both
+   come down, and the whole layer is reined in so the copy keeps the
+   dominant share of attention. */
+@media (max-width: 1024px) {
+  .ita-glow { width: min(640px, 84vw); }
+  .ita-geo { width: min(400px, 56vw); }
+}
+/* 769-1023px is the awkward band: the hero is still a SINGLE column here
+   (it only splits at 1024), so the copy owns the full width. Step the
+   atmosphere down and drop it so it stays clear of the copy block. */
+@media (min-width: 769px) and (max-width: 1023px) {
+  .ita-glow { width: min(560px, 74vw); right: -14%; }
+  .ita-geo { width: min(330px, 46vw); right: -4%; }
+}
+@media (max-width: 768px) {
+  .hero-ita { --ita-base: 0.82; }
+  .ita-glow { width: min(520px, 96vw); right: -22%; top: 40%; }
+  .ita-geo { width: min(330px, 74vw); right: -6%; top: 40%; }
+  /* Thin the sky: keep 5 of 8 crows and 7 of 12 embers. */
+  .ita-crow:nth-child(2),
+  .ita-crow:nth-child(5),
+  .ita-crow:nth-child(8) { display: none; }
+  .ita-embers > span:nth-child(3),
+  .ita-embers > span:nth-child(6),
+  .ita-embers > span:nth-child(9),
+  .ita-embers > span:nth-child(10),
+  .ita-embers > span:nth-child(12) { display: none; }
+}
+@media (max-width: 480px) {
+  /* Simplified composition: a whisper of glow, a ring pair and four crows.
+     No embers - at 320px they read as dust on the lens and add nothing. */
+  .hero-ita { --ita-base: 0.7; }
+  .ita-glow { width: 128vw; right: -46%; top: 34%; }
+  .ita-geo { width: min(260px, 96vw); right: -18%; top: 34%; }
+  .ita-geo-mark, .ita-geo-ring--in { opacity: 0.55; }
+  .ita-crow:nth-child(1) { --w: 22px; }
+  .ita-crow:nth-child(4) { --w: 30px; }
+  .ita-crow:nth-child(6) { --w: 28px; }
+  .ita-crow:nth-child(7) { --w: 34px; }
+  .ita-crows { mask-image: linear-gradient(90deg, transparent 0%, #000 30%, #000 70%, transparent 100%); -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 30%, #000 70%, transparent 100%); }
+  .ita-embers { display: none; }
 }
 .hero-grid { display: grid; gap: 2.6rem; min-width: 0; }
 .hero-copy { min-width: 0; }
@@ -379,7 +701,27 @@ body::before {
 }
 .h1-line:nth-child(1) > span { animation-delay: 0.05s; }
 .hero-copy h1 .h1-line:nth-child(2) > span, .h1-line.h1-line-2 > span { animation-delay: 0.17s; }
+/* Large display type: gold-hi keeps the accent line at 3.83:1 on the dark
+   hero, which raw gold would not. The rule beneath it draws in once on
+   entrance - a finite accent, not a looping sheen. */
+.h1-line--gold { position: relative; }
 .h1-line--gold > span { color: var(--gold-hi); }
+.h1-line--gold::after {
+  content: "";
+  position: absolute; left: 0; bottom: 0.04em;
+  width: 100%; max-width: 6rem; height: 3px; border-radius: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-hi));
+  transform: scaleX(0); transform-origin: left;
+  animation: accent-rule 0.85s var(--ease-cine) 0.55s both;
+}
+@keyframes accent-rule { to { transform: scaleX(1); } }
+/* Depth: a soft vignette pulls the eye to the headline without adding
+   another luminous layer. */
+.hero::after {
+  content: "";
+  position: absolute; inset: 0; z-index: -4; pointer-events: none;
+  background: radial-gradient(125% 95% at 50% 38%, transparent 42%, rgba(7, 9, 12, 0.6) 100%);
+}
 @keyframes h1-line-in {
   from { opacity: 0; transform: translateY(60%) scale(1.035); clip-path: inset(0 0 100% 0); }
   to { opacity: 1; transform: none; clip-path: inset(0 0 0 0); }
@@ -526,7 +868,10 @@ body::before {
 .value-card p { margin: 0; color: var(--muted); font-size: var(--fs-body-sm); }
 
 /* ============ WHAT WE BUILD: editorial numbered rows ============ */
-.services { background: var(--bg); }
+/* Chapter rule. Value and Services both sit on --bg with no divider, which
+   ran 2.6k px of undifferentiated background; this closes that seam using the
+   same token and idiom as .section-muted / .section-dark. */
+.services { background: var(--bg); border-top: 1px solid var(--line-soft); }
 .filter-bar { display: flex; flex-wrap: wrap; gap: 0.55rem; margin: 1.7rem 0 1.6rem; }
 .chip {
   position: relative;
@@ -550,8 +895,26 @@ body::before {
 .svc-group-title {
   font-size: 0.82rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--gold-hi); margin: 0 0 0.4rem; padding-bottom: 0.6rem;
-  border-bottom: 1px solid var(--line);
 }
+/* Resting divider. Present with or without JS, so the section is never
+   left without its rule. The gold draw is layered on top under .js only. */
+.svc-group-title::after {
+  content: ""; display: block; height: 1px;
+  background: var(--line);
+  transform: scaleX(1);
+}
+/* Group markers slide in from the left, then the gold rule draws across. */
+.js .svc-group-title {
+  opacity: 0; transform: translateX(-14px);
+  transition: opacity var(--dur-reveal) var(--ease-cine), transform var(--dur-reveal) var(--ease-cine);
+}
+.js .svc-group-title::after {
+  background: linear-gradient(90deg, var(--gold), rgba(201, 162, 39, 0.05));
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.9s var(--ease-cine) 0.18s;
+}
+.js .svc-group-title.is-visible { opacity: 1; transform: none; }
+.js .svc-group-title.is-visible::after { transform: scaleX(1); }
 /* Services: responsive card grid.
    The frame is drawn per card (right + bottom hairlines) with the container
    supplying top + left. Unlike a gap-over-coloured-background technique this
@@ -562,16 +925,23 @@ body::before {
   grid-template-columns: 1fr;
   border-top: 1px solid var(--line);
   border-left: 1px solid var(--line);
+  /* A group whose count does not fill the last row (5 of 3, 7 of 3, 4 of 3)
+     leaves the outer right and bottom hairlines undrawn, because those are
+     contributed per card. The two inset shadows redraw them at exactly the
+     pixel the last card's own border already occupies, so a full row is
+     unchanged while a ragged row closes into a complete frame. Inset rather
+     than border so the line never doubles up beside the card border. */
+  box-shadow: inset -1px 0 0 var(--line), inset 0 -1px 0 var(--line);
 }
-/* Card cell: number | title + description, with a reserved slot for the arrow */
+/* Card cell: service identifier, title, and description in a single content column */
 .card {
   position: relative;
-  display: grid; grid-template-columns: auto 1fr; gap: 0.2rem 1.1rem;
+  display: grid; grid-template-columns: 1fr; gap: 0.2rem 1.1rem;
   align-items: start; align-content: start;
   background-color: var(--bg);
   border-right: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
-  padding: 1.2rem 1.15rem 2.3rem;
+  padding: 1.2rem 1.15rem;
   overflow: hidden;
   transition: background-color var(--dur-base) ease, border-color var(--dur-base) ease, box-shadow var(--dur-base) ease;
 }
@@ -583,16 +953,8 @@ body::before {
   transition: opacity 0.25s ease, transform 0.25s ease;
   pointer-events: none;
 }
-.card::after {
-  content: "→";
-  position: absolute; right: 1.15rem; bottom: 0.95rem;
-  color: var(--gold-hi); font-weight: 900; font-size: 1.2rem; line-height: 1;
-  opacity: 0; transform: translateX(-8px);
-  transition: opacity 0.22s ease, transform 0.22s var(--ease);
-}
 .card:hover, .card:focus-within, .card:active { background: rgba(255, 255, 255, 0.025); }
 .card:hover::before, .card:focus-within::before, .card:active::before { opacity: 1; transform: none; }
-.card:hover::after, .card:focus-within::after, .card:active::after { opacity: 1; transform: none; }
 .card-no {
   font-family: var(--mono);
   color: var(--faint); font-weight: 700; font-size: 0.95rem; letter-spacing: 0.06em;
@@ -601,9 +963,21 @@ body::before {
   transition: color 0.2s ease, transform 0.2s ease;
 }
 .card:hover .card-no, .card:focus-within .card-no { color: var(--gold-hi); transform: translateX(4px); }
-.card h4 { grid-column: 2; margin: 0 0 0.15rem; font-size: var(--fs-h4); letter-spacing: 0.01em; text-transform: uppercase; color: var(--text); }
-.card p { grid-column: 2; }
+.card h4 { grid-column: auto; margin: 0 0 0.15rem; font-size: var(--fs-h4); letter-spacing: 0.01em; text-transform: uppercase; color: var(--text); }
+.card p { grid-column: auto; }
 .card > p:last-child, .card p { color: var(--muted); margin: 0.15rem 0 0; font-size: var(--fs-body-sm); transition: color 0.2s ease; }
+/* The number line is a <p>, so the rule above also matches it and, at (0,1,1),
+   outranks the single-class .card-no rule that sets its colour and size. Those
+   two declarations in .card-no are therefore inert, and the identifier renders
+   identically to the body copy: same --muted, same --fs-body-sm, no visual
+   hierarchy between them. This rule re-asserts them at (0,2,1) so the
+   identifier reads as a register mark above the description rather than as a
+   second paragraph. The hover rules at .card:hover .card-no are (0,3,0) and
+   still win, so the gold hover signal is unchanged. */
+.card p.card-no {
+  color: var(--faint);
+  font-size: 0.8rem;
+}
 .card:hover p, .card:focus-within p { color: #d8d2c2; }
 .card > div { min-width: 0; }
 #service-grid .card { animation: card-in 0.35s ease backwards; }
@@ -650,12 +1024,24 @@ body::before {
 }
 .flow-card:hover::before, .flow-card:focus-within::before { transform: scaleX(1); }
 .flow-card:hover::after, .flow-card:focus-within::after { transform: scaleY(1); }
+/* Horizontal wipe on the solution headline, matching the services motion so
+   the two adjacent sections share one gesture. */
+.js .flow-card h3 {
+  clip-path: inset(-0.2em 100% -0.2em 0);
+  transition: clip-path var(--dur-reveal) var(--ease-cine);
+  transition-delay: var(--d, 0ms);
+}
+.js .flow-card.reveal.is-visible h3 { clip-path: inset(-0.2em -0.2em -0.2em 0); }
 .flow-card h3 { color: var(--text); text-transform: uppercase; font-size: 1.02rem; letter-spacing: 0.01em; }
 .flow-card p { color: var(--muted); margin: 0.3rem 0 0; font-size: var(--fs-body-sm); }
 /* The closing "Business outcome" line carries the payoff, so it is the one
    paragraph lifted above the muted body tone. */
 .flow-card > p:last-child { color: #ded7c7; }
-.flow-label { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-hi) !important; margin: 0.9rem 0 0 !important; }
+/* Selector carries the element type on purpose: .flow-label is a <p>, so the
+   single-class form lost font-size to `.flow-card p` above and the label
+   rendered at body size, leaving the problem statement, the tier label and
+   the body copy all within 1px of each other. Same fix as .card p.card-no. */
+.flow-card p.flow-label { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-hi) !important; margin: 0.9rem 0 0 !important; }
 .flow-label:not(:first-of-type)::before { content: "↓ "; color: var(--gold); }
 .flow-label:first-of-type { margin-top: 0.7rem !important; }
 
@@ -677,6 +1063,17 @@ body::before {
 }
 .work-card:hover, .work-card:focus-within { border-color: var(--gold); transform: translateY(-5px); box-shadow: var(--shadow-lift); }
 .work-card:hover::before, .work-card:focus-within::before { transform: scaleX(1); }
+/* Hover overlay: a gold sheen wipes across the card on interaction. Uses a
+   layered background rather than a pseudo-element because ::after is already
+   used by the panel counter, and keeps the card itself immobile so hover can
+   never detach the pointer. */
+.work-card {
+  background-image: linear-gradient(120deg, rgba(201, 162, 39, 0.14) 0%, rgba(201, 162, 39, 0.02) 55%, transparent 100%);
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  transition: border-color 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease, background-size 0.6s var(--ease-cine);
+}
+.work-card:hover, .work-card:focus-within { background-size: 100% 100%; }
 .work-card h3, .case-copy h3 { color: var(--text); }
 .work-card p, .case-copy p { color: var(--muted); }
 .work-card .btn { margin-top: 0.9rem; }
@@ -796,7 +1193,17 @@ body::before {
   font-weight: 700; font-size: 0.82rem; letter-spacing: 0.1em;
   border-radius: var(--radius-sm); padding: 0.25rem 0.6rem; margin-bottom: 0.7rem;
   transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
+  /* Animated section marker: each stage number wipes in as its card reveals,
+     so the process reads as a sequence rather than a static list. */
+  clip-path: inset(-0.15em 0 100% 0);
 }
+.js .timeline li.reveal .step-no,
+.js .timeline li .step-no {
+  transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease,
+              clip-path var(--dur-reveal) var(--ease-cine);
+  transition-delay: 0s, 0s, 0s, var(--d, 0ms);
+}
+.js .timeline li.reveal.is-visible .step-no { clip-path: inset(-0.15em 0 -0.15em 0); }
 .timeline li:hover .step-no { transform: translateY(-1px); }
 .timeline li.is-current { border-color: var(--gold); box-shadow: var(--shadow-lift); }
 .timeline li.is-current .step-no { background: var(--gold); color: #141414; box-shadow: 0 0 0 4px rgba(201, 162, 39, 0.14); }
@@ -899,7 +1306,9 @@ body::before {
 .about-card p { color: var(--muted); margin: 0.3rem 0 0; font-size: var(--fs-body-sm); }
 
 /* ============ FAQ ============ */
-.faq-section { background: var(--bg); }
+/* .about sets border-top but not border-bottom, so the gradient -> --bg step
+   into this section had no rule at all. */
+.faq-section { background: var(--bg); border-top: 1px solid var(--line-soft); }
 .faq-group-title { margin: 1.8rem 0 0.8rem; font-size: 0.85rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-hi); }
 .faq-group-title:first-of-type { margin-top: 1.4rem; }
 .faq { display: grid; gap: 0.7rem; }
@@ -926,6 +1335,14 @@ body::before {
   background: var(--bg-deep);
   border-top: 1px solid var(--line-soft);
   padding-bottom: clamp(3rem, 6vw, 5rem);
+  /* Ambient layer (hierarchy level 5): the crimson field drifts very slowly so
+     the band never reads as a flat swatch. Suppressed under reduced motion. */
+  background-size: 180% 180%;
+  animation: cta-drift 26s var(--ease-in-out) infinite alternate;
+}
+@keyframes cta-drift {
+  from { background-position: 0% 50%; }
+  to { background-position: 100% 50%; }
 }
 .cta-band::before {
   content: "";
@@ -1082,6 +1499,21 @@ input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: 
 }
 .js .reveal.is-visible { opacity: 1; transform: none; will-change: auto; }
 
+/* ---- Horizontal word motion -------------------------------------
+   The service titles are the one place a horizontal wipe genuinely
+   improves comprehension: it reads as the row of capabilities being
+   drawn in, and it leaves the words fully legible at rest. Implemented
+   as a clip-path wipe (no layout, compositor-friendly) staggered by the
+   existing --d, so it needs no new observer and no new dependency.
+   Under reduced motion the clip is removed entirely, so the text is
+   present from the first paint rather than merely appearing faster. */
+.js .card h4 {
+  clip-path: inset(-0.2em 100% -0.2em 0);
+  transition: clip-path var(--dur-reveal) var(--ease-cine);
+  transition-delay: var(--d, 0ms);
+}
+.js .card.reveal.is-visible h4 { clip-path: inset(-0.2em -0.2em -0.2em 0); }
+
 /* Staggered entrances per grid */
 .js .cards .card:nth-child(2),
 .js .flow-grid .flow-card:nth-child(2),
@@ -1162,12 +1594,21 @@ input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: 
 }
 @media (min-width: 760px) and (max-width: 1023px) {
   /* Tablet: two columns, but keep the card comfortable rather than cramped. */
-  .card { padding: 1.1rem 1rem 2.15rem; }
+  .card { padding: 1.1rem 1rem; }
 }
 
 @media (min-width: 960px) {
   .site-nav { display: flex; align-items: center; }
   .nav-toggle { display: none; }
+  /* Desktop-only link stagger for the page entrance (see nav-in note). */
+  .js .site-nav a { animation: nav-in var(--dur-entrance) var(--ease-cine) both; }
+  .js .site-nav a:nth-child(1) { animation-delay: 0.16s; }
+  .js .site-nav a:nth-child(2) { animation-delay: 0.21s; }
+  .js .site-nav a:nth-child(3) { animation-delay: 0.26s; }
+  .js .site-nav a:nth-child(4) { animation-delay: 0.31s; }
+  .js .site-nav a:nth-child(5) { animation-delay: 0.36s; }
+  .js .site-nav a:nth-child(6) { animation-delay: 0.41s; }
+  .js .site-nav a:nth-child(7) { animation-delay: 0.46s; }
   .hero-grid { grid-template-columns: 1.05fr 0.95fr; align-items: center; }
   .hero { padding: 6rem 0 5rem; }
   .value-grid { grid-template-columns: 0.9fr 1.1fr; align-items: start; }
@@ -1199,6 +1640,14 @@ input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: 
   .process .timeline.is-visible::after { transform: scaleX(1); }
   .process .timeline li { padding-top: 1.1rem; }
   .process .timeline .step-no { position: relative; z-index: 1; }
+}
+
+/* Service grid: the three-column step is specified to begin at 1024px, not at
+   960px, so between 960 and 1023 the cards hold the two-column step set at
+   680px. Scoped to that band only, so the rest of the 960px block above is
+   unaffected, and it lands after that block so it wins on source order. */
+@media (min-width: 960px) and (max-width: 1023px) {
+  .cards { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (min-width: 1280px) {
@@ -1309,6 +1758,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: 
 }
 @keyframes menu-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
 
+
+
 /* ============ Reduced motion: content first, zero decoration ============ */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -1317,11 +1768,47 @@ input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: 
   body::before { opacity: 0.018; }
   .progress { display: none; }
   .js .reveal { opacity: 1; transform: none; transition: none; --d: 0ms; }
-  /* Never leave the clip reveal closed when motion is suppressed. */
+  /* Never leave a wipe closed when motion is suppressed - the text must be
+     present from first paint, not merely arrive sooner. */
   .js .mock.reveal { clip-path: none; }
+  .js .card h4, .js .flow-card h3, .js .svc-group-title { clip-path: none; }
   .hero-copy .eyebrow, .lede, .hero-ctas, .hero-points, .hero-points li, .hero-visual { animation: none; }
   .h1-line > span { animation: none; }
   .hero-grid-bg, .hero-glow { animation: none; }
+  .hero::after { display: none; }
+
+  /* ---- Atmosphere layer: hold a static composition ------------
+     Nothing in this layer carries information, so removing motion
+     removes nothing. Every sub-layer lands on a deliberate resting
+     frame rather than on its 0% keyframe (which would park the glow
+     un-bloomed and stack all eight crows at left:0). */
+  .ita-glow,
+  .ita-geo,
+  .ita-geo-ring--in,
+  .ita-geo-core,
+  .ita-crow,
+  .ita-embers > span { animation: none; }
+  .ita-glow { transform: translate3d(0, -50%, 0) scale(1); opacity: 0.8; }
+  .ita-geo { transform: translate3d(0, -50%, 0) rotate(24deg); opacity: 0.5; }
+  .ita-geo-ring--in { transform: none; }
+  .ita-geo-core { transform: scale(1); opacity: 0.7; }
+  /* Park each crow at its own static position instead of left:0. */
+  .ita-crow { left: var(--sx, 50%); transform: none; opacity: var(--o, 0.3); }
+  .ita-crow:nth-child(1) { --sx: 34%; }
+  .ita-crow:nth-child(2) { --sx: 58%; }
+  .ita-crow:nth-child(3) { --sx: 78%; }
+  .ita-crow:nth-child(4) { --sx: 26%; }
+  .ita-crow:nth-child(5) { --sx: 48%; }
+  .ita-crow:nth-child(6) { --sx: 68%; }
+  .ita-crow:nth-child(7) { --sx: 40%; }
+  .ita-crow:nth-child(8) { --sx: 86%; }
+  .ita-embers > span { transform: translate3d(0, -32vh, 0); opacity: var(--o, 0.4); }
+  .h1-line--gold::after { animation: none; transform: scaleX(1); }
+  .cta-band { animation: none; background-position: 50% 50%; }
+  /* Page-entrance layer is decorative: pin it to rest. */
+  .js .brand, .js .site-nav a, .js .header-actions { animation: none; opacity: 1; transform: none; }
+  .js .svc-group-title { opacity: 1; transform: none; }
+  .js .svc-group-title::after { transform: scaleX(1); }
   /* Delivery diagram: land every element on its finished state, statically. */
   .sys-rail::before, .sys-rail::after, .sys-bus { animation: none; transform: none; }
   .sys-stage i, .sys-stage span, .sys-cap { animation: none; opacity: 1; }
@@ -1445,6 +1932,10 @@ input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: 
   .marquee-row li::after { background: CanvasText; }
   .hero-glow,
   .hero-grid-bg,
+  /* The atmosphere layer is entirely gradient and filter based, which
+     forced-colors strips; left in place it would collapse into flat
+     slabs of system colour. It is decorative, so remove it. */
+  .hero-ita,
   .progress,
   body::after,
   body::before {
@@ -1475,6 +1966,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: 
   }
   .hero-glow,
   .hero-grid-bg,
+  .hero-ita,
   .progress,
   body::after,
   body::before,
@@ -1526,4 +2018,85 @@ input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: 
   .marquee-row li { color: #333; font-size: 8pt; }
   .marquee-row li::after { background: #666; }
   .cta-magnetic { translate: none !important; box-shadow: none !important; }
+}
+
+/* ============================================================
+   MOTION LAYER (scroll reveal) - js/motion.js
+
+   Every rule below is gated on `html.motion-active`, a class that motion.js
+   adds to <html> only after every target element has been tagged, and which it
+   removes again if initialisation throws. If the script never runs, is
+   blocked, or fails, the class is absent and NOTHING here applies - every
+   element on the page stays visible.
+
+   The second condition, `body:not(.is-intro-pending)`, sequences this behind
+   the cinematic intro. cinematic-intro.js puts that class on <body> for the
+   whole sequence and removes it at the hand-off, so the reveal system stays
+   inert until the intro has finished and can never fight the intro's own
+   page fade or its scroll lock.
+
+   Only `opacity` and `transform`/`translate` are animated. No layout property
+   is touched, so this cannot cause CLS. Stagger comes from the `--motion-i`
+   index that motion.js writes on each target and each heading word.
+   ============================================================ */
+
+html.motion-active body:not(.is-intro-pending) .motion-reveal {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity 0.62s var(--ease-cine) calc(var(--motion-i, 0) * 70ms),
+    transform 0.62s var(--ease-cine) calc(var(--motion-i, 0) * 70ms);
+}
+
+html.motion-active body:not(.is-intro-pending) .motion-reveal.is-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Heading words. `translate` is used rather than `transform` because these are
+   inline spans: the independent translate property animates them without
+   `display: inline-block`, so line breaking and letter shapes are untouched. */
+html.motion-active body:not(.is-intro-pending) .motion-word {
+  opacity: 0;
+  translate: 0 0.42em;
+  transition:
+    opacity 0.5s var(--ease-cine) calc(var(--motion-i, 0) * 26ms + 90ms),
+    translate 0.5s var(--ease-cine) calc(var(--motion-i, 0) * 26ms + 90ms);
+}
+
+html.motion-active body:not(.is-intro-pending) .motion-reveal.is-in .motion-word {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* Users who ask for reduced motion never get these classes applied at all
+   (motion.js returns early), so this is belt-and-braces for the case where
+   the class is present regardless. */
+@media (prefers-reduced-motion: reduce) {
+  html.motion-active .motion-reveal,
+  html.motion-active .motion-word {
+    opacity: 1 !important;
+    transform: none !important;
+    translate: none !important;
+    transition: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  html.motion-active .motion-reveal,
+  html.motion-active .motion-word {
+    opacity: 1 !important;
+    transform: none !important;
+    translate: none !important;
+  }
+}
+
+@media print {
+  html.motion-active .motion-reveal,
+  html.motion-active .motion-word {
+    opacity: 1 !important;
+    transform: none !important;
+    translate: none !important;
+    transition: none !important;
+  }
 }

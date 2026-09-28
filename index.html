@@ -146,6 +146,48 @@
     <section class="hero" id="home">
       <div class="hero-grid-bg" aria-hidden="true"></div>
       <div class="hero-glow" aria-hidden="true"></div>
+      <!--
+        Cinematic atmosphere layer (Itachi-inspired).
+        Purely decorative: aria-hidden, pointer-events:none in CSS, and it sits
+        at z-index -1 so hero copy, CTAs and navigation always paint above it.
+        No information lives here and no control is reachable through it.
+        Composition: glow -> geometry -> figure -> crows -> embers.
+      -->
+      <div class="hero-ita" aria-hidden="true">
+        <span class="ita-glow"></span>
+        <div class="ita-geo">
+          <span class="ita-geo-ring"></span>
+          <span class="ita-geo-ring ita-geo-ring--in"></span>
+          <span class="ita-geo-mark"></span>
+          <span class="ita-geo-mark"></span>
+          <span class="ita-geo-mark"></span>
+          <span class="ita-geo-core"></span>
+        </div>
+        <div class="ita-crows">
+          <span class="ita-crow"></span>
+          <span class="ita-crow"></span>
+          <span class="ita-crow"></span>
+          <span class="ita-crow"></span>
+          <span class="ita-crow"></span>
+          <span class="ita-crow"></span>
+          <span class="ita-crow"></span>
+          <span class="ita-crow"></span>
+        </div>
+        <div class="ita-embers">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
       <div class="container hero-grid">
         <div class="hero-copy">
           <p class="eyebrow eyebrow-light">Ideas | Software | Real Impact</p>
@@ -237,27 +279,27 @@
             <h3 class="svc-group-title">Build</h3>
             <div class="cards">
               <article class="card" data-category="build">
-                <p class="card-no">01 · Build</p>
+                <p class="card-no">01</p>
                 <h4>Custom Software Development</h4>
                 <p>Web platforms and internal tools built around your workflows, roles and reporting needs.</p>
               </article>
               <article class="card" data-category="build">
-                <p class="card-no">02 · Build</p>
+                <p class="card-no">02</p>
                 <h4>SaaS Product Development</h4>
                 <p>Multi-tenant architecture, subscriptions, onboarding and admin tooling for products you sell.</p>
               </article>
               <article class="card" data-category="build">
-                <p class="card-no">07 · Build</p>
+                <p class="card-no">07</p>
                 <h4>Mobile Application Development</h4>
                 <p>Field, operations and customer-facing apps that sync cleanly with your backend systems.</p>
               </article>
               <article class="card" data-category="build">
-                <p class="card-no">18 · Build</p>
+                <p class="card-no">18</p>
                 <h4>MVP Development &amp; Consulting</h4>
                 <p>Validate fast: lean scope, launchable MVP, and a clear path to v2 based on real usage.</p>
               </article>
               <article class="card" data-category="build">
-                <p class="card-no">20 · Build</p>
+                <p class="card-no">20</p>
                 <h4>Dedicated Development Team</h4>
                 <p>A focused team that works inside your roadmap, rituals and priorities over the long term.</p>
               </article>
@@ -268,27 +310,27 @@
             <h3 class="svc-group-title">Automate &amp; Intelligence</h3>
             <div class="cards">
               <article class="card" data-category="intelligence">
-                <p class="card-no">03 · Automate</p>
+                <p class="card-no">03</p>
                 <h4>Business Process Automation</h4>
                 <p>Replace spreadsheets, email chains and manual handoffs with reliable automated workflows.</p>
               </article>
               <article class="card" data-category="intelligence">
-                <p class="card-no">04 · Automate</p>
+                <p class="card-no">04</p>
                 <h4>AI &amp; Automation</h4>
                 <p>Practical AI: document extraction, classification, assistants and workflow copilots — scoped to ROI.</p>
               </article>
               <article class="card" data-category="intelligence">
-                <p class="card-no">10 · Automate</p>
+                <p class="card-no">10</p>
                 <h4>Dashboards &amp; Business Intelligence</h4>
                 <p>Role-based dashboards and reports that show performance, bottlenecks and next actions.</p>
               </article>
               <article class="card" data-category="intelligence">
-                <p class="card-no">14 · Automate</p>
+                <p class="card-no">14</p>
                 <h4>Real-Time Applications</h4>
                 <p>Live tracking, notifications, chat and status updates where timing actually matters.</p>
               </article>
               <article class="card" data-category="intelligence">
-                <p class="card-no">15 · Automate</p>
+                <p class="card-no">15</p>
                 <h4>Scheduling &amp; Workflow Systems</h4>
                 <p>Bookings, shifts, jobs and approvals with calendars, reminders and conflict handling.</p>
               </article>
@@ -299,37 +341,37 @@
             <h3 class="svc-group-title">Business Systems</h3>
             <div class="cards">
               <article class="card" data-category="systems">
-                <p class="card-no">05 · Systems</p>
+                <p class="card-no">05</p>
                 <h4>CRM &amp; Lead Management Systems</h4>
                 <p>Pipelines, follow-ups, assignments and reporting so no lead or task falls through the cracks.</p>
               </article>
               <article class="card" data-category="systems">
-                <p class="card-no">06 · Systems</p>
+                <p class="card-no">06</p>
                 <h4>LMS / Education Technology</h4>
                 <p>Courses, cohorts, assessments, progress tracking and certificates for training businesses.</p>
               </article>
               <article class="card" data-category="systems">
-                <p class="card-no">08 · Systems</p>
+                <p class="card-no">08</p>
                 <h4>API &amp; System Integration</h4>
                 <p>Connect CRM, ERP, payments, messaging and legacy tools into one consistent flow of data.</p>
               </article>
               <article class="card" data-category="systems">
-                <p class="card-no">09 · Systems</p>
+                <p class="card-no">09</p>
                 <h4>Document &amp; Data Management</h4>
                 <p>Structured storage, search, versioning, approvals and audit trails for operational documents.</p>
               </article>
               <article class="card" data-category="systems">
-                <p class="card-no">11 · Systems</p>
+                <p class="card-no">11</p>
                 <h4>Authentication &amp; Security Architecture</h4>
                 <p>Roles, permissions, SSO, session control and secure defaults designed in from day one.</p>
               </article>
               <article class="card" data-category="systems">
-                <p class="card-no">13 · Systems</p>
+                <p class="card-no">13</p>
                 <h4>Payment &amp; Billing Systems</h4>
                 <p>Subscriptions, invoices, collections and reconciliation flows integrated with your operations.</p>
               </article>
               <article class="card" data-category="systems">
-                <p class="card-no">16 · Systems</p>
+                <p class="card-no">16</p>
                 <h4>Cloud &amp; Deployment</h4>
                 <p>Hosting, environments, backups and release pipelines set up for reliability and low cost.</p>
               </article>
@@ -340,22 +382,22 @@
             <h3 class="svc-group-title">Evolve &amp; Support</h3>
             <div class="cards">
               <article class="card" data-category="evolve">
-                <p class="card-no">12 · Evolve</p>
+                <p class="card-no">12</p>
                 <h4>Legacy System Modernization</h4>
                 <p>Rebuild, re-platform or strangler-migrate ageing systems without stopping the business.</p>
               </article>
               <article class="card" data-category="evolve">
-                <p class="card-no">17 · Evolve</p>
+                <p class="card-no">17</p>
                 <h4>Software Maintenance &amp; Technical Takeover</h4>
                 <p>Take over an existing codebase: stabilise, document, fix and continue development safely.</p>
               </article>
               <article class="card" data-category="evolve">
-                <p class="card-no">19 · Evolve</p>
+                <p class="card-no">19</p>
                 <h4>Software Audit &amp; Technical Consulting</h4>
                 <p>Independent review of architecture, code quality, security posture and build-vs-buy decisions.</p>
               </article>
               <article class="card" data-category="evolve">
-                <p class="card-no">21 · Evolve</p>
+                <p class="card-no">21</p>
                 <h4>Support &amp; Training</h4>
                 <p>Handover docs, admin training and responsive support so your team owns the system confidently.</p>
               </article>
@@ -983,5 +1025,12 @@
 
   <script src="js/cinematic-intro.js" defer></script>
   <script src="js/main.js" defer></script>
+  <!-- Scroll-reveal motion layer. Loads after main.js and does not depend on
+       it. Its reveal CSS is gated on html.motion-active AND
+       body:not(.is-intro-pending), so the reveal system stays inert for the
+       whole cinematic intro and only engages once the intro has handed off.
+       If this file fails to load, the class is never added and every element
+       remains visible. -->
+  <script src="js/motion.js" defer></script>
 </body>
 </html>
